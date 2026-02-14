@@ -4,16 +4,16 @@ import os
 
 # ---------- SETTINGS ----------
 WIDTH = 1080
-HEIGHT = 1350
+HEIGHT = 1350  # 4:5 ratio (viral format)
 
-BG_COLOR = (0,0,0)
-YELLOW = (255,185,0)
-WHITE = (235,235,235)
-GRAY = (90,90,90)
+BG_COLOR = (0, 0, 0)
+YELLOW = (255, 185, 0)
+WHITE = (235, 235, 235)
+GRAY = (90, 90, 90)
 
 FONT_PATH = "src/Montserrat-Bold.ttf"
 
-TITLE_SIZE = 78
+TITLE_SIZE = 80
 BODY_SIZE = 44
 CTA_SIZE = 48
 WATERMARK_SIZE = 28
@@ -34,65 +34,53 @@ points = [
 "You agree with everything because you’re afraid your real opinion won’t be accepted."
 ]
 
-cta = "8. If you don’t follow now, you’ll probably never see us again."
-watermark = "THE HUMAN CODE"
+cta = "If you don’t follow now, you’ll probably never see us again."
 
 # ---------- IMAGE ----------
-img = Image.new("RGB",(WIDTH,HEIGHT),BG_COLOR)
+img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
 draw = ImageDraw.Draw(img)
 
-title_font = ImageFont.truetype(FONT_PATH,TITLE_SIZE)
-body_font = ImageFont.truetype(FONT_PATH,BODY_SIZE)
-cta_font = ImageFont.truetype(FONT_PATH,CTA_SIZE)
-watermark_font = ImageFont.truetype(FONT_PATH,WATERMARK_SIZE)
-
-y = 80
+title_font = ImageFont.truetype(FONT_PATH, TITLE_SIZE)
+body_font = ImageFont.truetype(FONT_PATH, BODY_SIZE)
+cta_font = ImageFont.truetype(FONT_PATH, CTA_SIZE)
+watermark_font = ImageFont.truetype(FONT_PATH, WATERMARK_SIZE)
 
 # ---------- TITLE ----------
+title_y = 80
+
 for line in title.split("\n"):
-    w,h = draw.textbbox((0,0),line,font=title_font)[2:]
-    x = (WIDTH-w)//2
-    draw.text((x,y),line,fill=YELLOW,font=title_font)
-    y += h + 12
+    w = draw.textlength(line, font=title_font)
+    draw.text(((WIDTH-w)/2, title_y), line, font=title_font, fill=YELLOW)
+    title_y += TITLE_SIZE + 10
 
-y += 30
+# ---------- BODY ----------
+y = title_y + 40
 
-# ---------- AUTO SPACING ENGINE ----------
-wrap_width = 32
-line_gap = 8
+for i, p in enumerate(points, 1):
+    text = f"{i}. {p}"
+    wrapped = textwrap.fill(text, width=42)
 
-for i,point in enumerate(points, start=1):
-    wrapped = textwrap.fill(f"{i}. {point}", width=wrap_width)
-    lines = wrapped.split("\n")
-
-    for line in lines:
-        draw.text((LEFT_MARGIN,y),line,fill=WHITE,font=body_font)
-        line_h = draw.textbbox((0,0),line,font=body_font)[3]
-        y += line_h + line_gap
-
-    y += 28  # spacing between points
+    for line in wrapped.split("\n"):
+        draw.text((LEFT_MARGIN, y), line, font=body_font, fill=WHITE)
+        y += BODY_SIZE + 8
+    
+    y += 12  # spacing between points
 
 # ---------- CTA ----------
 y += 10
-wrapped_cta = textwrap.fill(cta,width=32)
+wrapped_cta = textwrap.fill(f"{len(points)+1}. {cta}", width=42)
 
 for line in wrapped_cta.split("\n"):
-    draw.text((LEFT_MARGIN,y),line,fill=YELLOW,font=cta_font)
-    line_h = draw.textbbox((0,0),line,font=cta_font)[3]
-    y += line_h + 6
+    draw.text((LEFT_MARGIN, y), line, font=cta_font, fill=YELLOW)
+    y += CTA_SIZE + 6
 
-# ---------- SAFE WATERMARK ----------
-w,h = draw.textbbox((0,0),watermark,font=watermark_font)[2:]
-
-watermark_y = y + 40
-if watermark_y > HEIGHT-80:
-    watermark_y = HEIGHT-80
-
-draw.text(((WIDTH-w)//2, watermark_y),
-          watermark, fill=GRAY, font=watermark_font)
+# ---------- WATERMARK ----------
+wm = "THE HUMAN CODE"
+w = draw.textlength(wm, font=watermark_font)
+draw.text(((WIDTH-w)/2, HEIGHT-70), wm, font=watermark_font, fill=GRAY)
 
 # ---------- SAVE ----------
-os.makedirs("output",exist_ok=True)
+os.makedirs("output", exist_ok=True)
 img.save("output/post.png")
 
-print("Done. Saved to output/post.png")
+print("DONE ✅ Image saved in /output/post.png")
