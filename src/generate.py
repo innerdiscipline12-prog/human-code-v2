@@ -13,7 +13,7 @@ TEXT_COLOR = (240,240,240)
 CTA_COLOR = (255,190,0)
 WATERMARK_COLOR = (90,90,90)
 
-FONT_PATH = "Montserrat-Bold.ttf"
+FONT_PATH = "src/Montserrat-Bold.ttf"
 
 TITLE_SIZE = 64
 TEXT_SIZE = 36
