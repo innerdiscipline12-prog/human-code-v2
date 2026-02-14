@@ -1,65 +1,108 @@
 import os
 from PIL import Image, ImageDraw, ImageFont
-from moviepy.editor import ImageSequenceClip
+import textwrap
+import random
 
-W,H = 1080,1920
-BG=(0,0,0)
-YELLOW=(255,190,0)
-WHITE=(240,240,240)
+# ===== SETTINGS =====
+W, H = 1080, 1350
+BG_COLOR = (10,10,10)
+GOLD = (212,175,55)
+WHITE = (240,240,240)
+GRAY = (130,130,130)
 
-TITLE="SELF-RESPECT CHECK"
+TITLE_FONT_SIZE = 72
+BODY_FONT_SIZE = 44
+CTA_FONT_SIZE = 38
 
-LINES=[
-"1. You ignore red flags",
-"2. You seek constant approval",
-"3. You chase those ignoring you",
-"4. You accept less than you give",
-"5. You avoid hard conversations",
-"6. If you scroll past now, this may never find you again."
+OUTPUT_DIR = "output/photos"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+# ===== FONTS (GitHub safe default) =====
+title_font = ImageFont.load_default()
+body_font = ImageFont.load_default()
+cta_font = ImageFont.load_default()
+
+# ===== CONTENT =====
+posts = [
+    {
+        "title": "SELF-RESPECT CHECK",
+        "lines":[
+            "You ignore red flags",
+            "You seek constant approval",
+            "You excuse disrespect",
+            "You stay where you're drained",
+            "You accept less than you give",
+        ],
+        "cta":"If you don’t follow now, you’ll probably never see us again."
+    },
+    {
+        "title":"QUIET POWER RULES",
+        "lines":[
+            "Move in silence",
+            "Protect your energy",
+            "Consistency beats mood",
+            "Discipline over feelings",
+            "Standards over comfort",
+        ],
+        "cta":"If you don’t follow now, you’ll probably never see us again."
+    },
+    {
+        "title":"BOUNDARY REMINDERS",
+        "lines":[
+            "No is a full sentence",
+            "Distance is protection",
+            "Not everyone deserves access",
+            "Peace over people-pleasing",
+            "Respect your limits",
+        ],
+        "cta":"If you don’t follow now, you’ll probably never see us again."
+    },
 ]
 
-os.makedirs("output",exist_ok=True)
+# ===== DRAW FUNCTION =====
+def create_post(data, idx):
+    img = Image.new("RGB",(W,H),BG_COLOR)
+    draw = ImageDraw.Draw(img)
 
-title_font=ImageFont.truetype("DejaVuSans-Bold.ttf",90)
-text_font=ImageFont.truetype("DejaVuSans-Bold.ttf",60)
-wm_font=ImageFont.truetype("DejaVuSans-Bold.ttf",36)
+    y = 80
 
-# ===== IMAGE =====
-def make_img(lines,name):
-    img=Image.new("RGB",(W,H),BG)
-    d=ImageDraw.Draw(img)
+    # Title
+    title = data["title"]
+    tw = draw.textlength(title,font=title_font)
+    draw.text(((W-tw)/2,y),title,fill=GOLD,font=title_font)
+    y += 120
 
-    d.text((80,120),TITLE,font=title_font,fill=YELLOW)
+    # Lines
+    for i,line in enumerate(data["lines"],1):
+        text = f"{i}. {line}"
+        wrapped = textwrap.fill(text,28)
 
-    y=380
-    for l in lines:
-        d.text((120,y),l,font=text_font,fill=WHITE)
-        y+=120
+        for part in wrapped.split("\n"):
+            w = draw.textlength(part,font=body_font)
+            draw.text(((W-w)/2,y),part,fill=WHITE,font=body_font)
+            y+=55
 
-    d.text((W//2-160,H-120),"THE HUMAN CODE",font=wm_font,fill=(120,120,120))
-    img.save(f"output/{name}")
+        y+=15
 
-make_img(LINES,"image.png")
+    # CTA (numbered last)
+    y+=40
+    cta = f"{len(data['lines'])+1}. {data['cta']}"
+    wrapped = textwrap.fill(cta,34)
 
-# ===== CAROUSEL =====
-chunks=[LINES[0:2],LINES[2:4],LINES[4:6]]
-for i,c in enumerate(chunks):
-    make_img(c,f"carousel_{i+1}.png")
+    for part in wrapped.split("\n"):
+        w = draw.textlength(part,font=cta_font)
+        draw.text(((W-w)/2,y),part,fill=GRAY,font=cta_font)
+        y+=45
 
-# ===== REEL =====
-frames=[]
-for line in LINES:
-    img=Image.new("RGB",(W,H),BG)
-    d=ImageDraw.Draw(img)
+    # Watermark
+    wm="THE HUMAN CODE"
+    w = draw.textlength(wm,font=body_font)
+    draw.text(((W-w)/2,H-60),wm,fill=(80,80,80),font=body_font)
 
-    d.text((80,120),TITLE,font=title_font,fill=YELLOW)
-    d.text((120,900),line,font=text_font,fill=WHITE)
+    img.save(f"{OUTPUT_DIR}/post_{idx}.jpg",quality=95)
 
-    frame_path=f"output/frame_{len(frames)}.png"
-    img.save(frame_path)
-    frames.append(frame_path)
+# ===== RUN =====
+for i,data in enumerate(posts,1):
+    create_post(data,i)
 
-clip=ImageSequenceClip(frames,fps=1)
-clip.write_videofile("output/reel.mp4",fps=24)
-
-print("DONE")
+print("DONE — Photos generated.")
