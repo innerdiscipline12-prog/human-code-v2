@@ -11,7 +11,8 @@ YELLOW = (255, 185, 0)
 WHITE = (235, 235, 235)
 GRAY = (90, 90, 90)
 
-FONT_PATH = "Montserrat-Bold.ttf"
+FONT_PATH = "src/Montserrat-Bold.ttf"
+
 
 TITLE_SIZE = 80
 BODY_SIZE = 44
