@@ -1,81 +1,92 @@
 from PIL import Image, ImageDraw, ImageFont
 import os
+import textwrap
 
-# ---------- SETTINGS ----------
-WIDTH = 1080
-HEIGHT = 1350
-BG_COLOR = (0, 0, 0)
-YELLOW = (255, 185, 0)
-WHITE = (240, 240, 240)
-GRAY = (120, 120, 120)
+# -------- SETTINGS --------
+W, H = 1080, 1350
+BG_COLOR = (0,0,0)
 
-TITLE_SIZE = 64
-TEXT_SIZE = 42
-WATERMARK_SIZE = 28
+YELLOW = (255,185,0)
+WHITE = (245,245,245)
+GRAY = (90,90,90)
 
-FONT_BOLD = ImageFont.load_default()
-FONT_REG = ImageFont.load_default()
+TITLE_SIZE = 72
+BODY_SIZE = 42
+CTA_SIZE = 42
+WM_SIZE = 28
 
-# ---------- CONTENT ----------
-title = "7 SIGNS YOU MIGHT BE\nTOXIC TO YOURSELF"
+LEFT_MARGIN = 90
+RIGHT_MARGIN = 90
 
-lines = [
+# -------- LOAD FONTS --------
+def load_font(size):
+    try:
+        return ImageFont.truetype("Montserrat-Bold.ttf", size)
+    except:
+        return ImageFont.load_default()
+
+title_font = load_font(TITLE_SIZE)
+body_font = load_font(BODY_SIZE)
+cta_font = load_font(CTA_SIZE)
+wm_font = load_font(WM_SIZE)
+
+# -------- CONTENT --------
+title = "7 SIGNS YOU MIGHT BE TOXIC TO YOURSELF"
+
+points = [
 "You say sorry for things that were never your fault.",
 "You tolerate people who shrink your confidence.",
 "You keep checking your phone, waiting for texts that don’t come.",
 "You treat every piece of feedback like it’s an attack on your worth.",
 "You measure your life against everyone else’s highlight reel.",
 "You sleep more to escape, not to rest.",
-"You agree with everything because you're afraid your real opinion won’t be accepted.",
-"If you don’t follow now, you’ll probably never see us again."
+"You agree with everything because you're afraid your real opinion won’t be accepted."
 ]
 
+cta = "If you don’t follow now, you’ll probably never see us again."
 watermark = "THE HUMAN CODE"
 
-# ---------- CREATE IMAGE ----------
-img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
+# -------- CREATE IMAGE --------
+img = Image.new("RGB",(W,H),BG_COLOR)
 draw = ImageDraw.Draw(img)
 
-# ---------- TITLE ----------
-y = 80
-for tline in title.split("\n"):
-    w = draw.textlength(tline, font=FONT_BOLD)
-    draw.text(((WIDTH-w)/2, y), tline, fill=YELLOW, font=FONT_BOLD)
-    y += 70
+y = 70
 
-y += 40
+# -------- TITLE --------
+title_lines = textwrap.wrap(title.upper(), width=20)
 
-# ---------- BODY ----------
-num = 1
-for i, line in enumerate(lines):
-    text = f"{num}. {line}"
+for line in title_lines:
+    w = draw.textlength(line, font=title_font)
+    draw.text(((W-w)/2, y), line, font=title_font, fill=YELLOW)
+    y += 80
 
-    color = YELLOW if i == len(lines)-1 else WHITE
+y += 30
 
-    words = text.split()
-    current = ""
+# -------- BODY --------
+for i, p in enumerate(points):
+    text = f"{i+1}. {p}"
+    wrapped = textwrap.wrap(text, width=40)
 
-    for word in words:
-        test = current + word + " "
-        w = draw.textlength(test, font=FONT_REG)
+    for line in wrapped:
+        draw.text((LEFT_MARGIN, y), line, font=body_font, fill=WHITE)
+        y += 55
 
-        if w > WIDTH - 160:
-            draw.text((80, y), current, fill=color, font=FONT_REG)
-            y += 55
-            current = word + " "
-        else:
-            current = test
+    y += 10
 
-    draw.text((80, y), current, fill=color, font=FONT_REG)
+# -------- CTA (YELLOW) --------
+y += 10
+cta_lines = textwrap.wrap(f"{len(points)+1}. {cta}", width=40)
+
+for line in cta_lines:
+    draw.text((LEFT_MARGIN, y), line, font=cta_font, fill=YELLOW)
     y += 55
-    num += 1
 
-# ---------- WATERMARK ----------
-w = draw.textlength(watermark, font=FONT_REG)
-draw.text(((WIDTH-w)/2, HEIGHT-60), watermark, fill=GRAY, font=FONT_REG)
+# -------- WATERMARK --------
+w = draw.textlength(watermark, font=wm_font)
+draw.text(((W-w)/2, H-70), watermark, font=wm_font, fill=GRAY)
 
-# ---------- SAVE ----------
+# -------- SAVE --------
 os.makedirs("output", exist_ok=True)
-img.save("output/post.png")
+img.save("output/viral_post.png")
 
-print("✅ Image generated: output/post.png")
+print("✅ Viral post generated -> output/viral_post.png")
