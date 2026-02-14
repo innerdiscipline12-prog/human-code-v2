@@ -406,6 +406,355 @@ content_bank = {
 ]
 },
 
+{
+"title":"7 DARK TRUTHS\nABOUT ATTENTION",
+"lines":[
+"Attention is borrowed.",
+"Attention follows value.",
+"Attention fades fast.",
+"Attention is selective.",
+"Attention rewards rarity.",
+"Attention respects presence.",
+"Attention follows power.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU’RE\nEMOTIONALLY READABLE",
+"lines":[
+"Your face reveals stress.",
+"Your tone shows doubt.",
+"Your silence shows hurt.",
+"Your reactions expose you.",
+"Your eyes show fear.",
+"Your words leak feelings.",
+"Your mood is visible.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 HARSH\nREALITY CHECKS",
+"lines":[
+"No one owes support.",
+"Effort isn’t guaranteed reward.",
+"People choose convenience.",
+"Feelings don’t equal truth.",
+"Trust can expire.",
+"Time exposes lies.",
+"Results silence talk.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK TRUTHS\nABOUT SUCCESS",
+"lines":[
+"Success changes friendships.",
+"Success attracts fakes.",
+"Success reveals envy.",
+"Success creates distance.",
+"Success isolates quietly.",
+"Success raises standards.",
+"Success exposes motives.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nFEAR REJECTION",
+"lines":[
+"You over-please.",
+"You apologize often.",
+"You avoid honesty.",
+"You hide opinions.",
+"You fear silence.",
+"You seek approval.",
+"You avoid risk.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 TRUTHS\nABOUT CONTROL",
+"lines":[
+"Control beats chaos.",
+"Control beats emotion.",
+"Control beats impulse.",
+"Control shows power.",
+"Control earns respect.",
+"Control builds presence.",
+"Control protects value.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nPEOPLE TRUTHS",
+"lines":[
+"People protect self-interest.",
+"People follow advantage.",
+"People admire winners.",
+"People copy confidence.",
+"People test weakness.",
+"People value scarcity.",
+"People respect power.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU’RE\nTOO TRUSTING",
+"lines":[
+"You believe promises.",
+"You ignore patterns.",
+"You forgive lies.",
+"You defend betrayers.",
+"You share secrets.",
+"You expect honesty.",
+"You trust words.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 REALITIES\nABOUT FRIENDSHIPS",
+"lines":[
+"Some compete quietly.",
+"Some compare silently.",
+"Some stay for gain.",
+"Some hide jealousy.",
+"Some copy success.",
+"Few stay loyal.",
+"Time reveals truth.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK TRUTHS\nABOUT VALUE",
+"lines":[
+"Value attracts respect.",
+"Value creates demand.",
+"Value needs scarcity.",
+"Value needs standards.",
+"Value needs discipline.",
+"Value filters people.",
+"Value builds power.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU’RE\nOVER-AVAILABLE",
+"lines":[
+"You reply instantly.",
+"You wait on others.",
+"You cancel plans.",
+"You say yes always.",
+"You accept delays.",
+"You chase replies.",
+"You fear missing out.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 HARSH\nTRUTH BOMBS",
+"lines":[
+"Not all support you.",
+"Not all clap for you.",
+"Not all mean well.",
+"Not all stay loyal.",
+"Not all want growth.",
+"Not all wish success.",
+"Not all are real.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 TRUTHS\nABOUT SILENCE",
+"lines":[
+"Silence controls rooms.",
+"Silence shows strength.",
+"Silence hides strategy.",
+"Silence builds mystery.",
+"Silence filters noise.",
+"Silence protects power.",
+"Silence speaks loud.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nLOYALTY REALITIES",
+"lines":[
+"Loyalty gets tested.",
+"Loyalty needs value.",
+"Loyalty needs respect.",
+"Loyalty needs honesty.",
+"Loyalty is rare.",
+"Loyalty is proven.",
+"Loyalty is quiet.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nSEEK VALIDATION",
+"lines":[
+"You post for praise.",
+"You check reactions.",
+"You need approval.",
+"You fear criticism.",
+"You copy trends.",
+"You chase likes.",
+"You doubt yourself.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 REALITIES\nABOUT STATUS",
+"lines":[
+"Status changes tone.",
+"Status attracts attention.",
+"Status gains respect.",
+"Status shifts behavior.",
+"Status raises value.",
+"Status filters circles.",
+"Status influences treatment.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK TRUTHS\nABOUT EGO",
+"lines":[
+"Ego fears truth.",
+"Ego blocks growth.",
+"Ego hates silence.",
+"Ego avoids blame.",
+"Ego resists change.",
+"Ego seeks praise.",
+"Ego hides weakness.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU’RE\nTOO PASSIVE",
+"lines":[
+"You avoid conflict.",
+"You stay silent.",
+"You tolerate disrespect.",
+"You accept less.",
+"You fear speaking.",
+"You suppress needs.",
+"You avoid tension.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 POWER\nPRINCIPLES",
+"lines":[
+"Calm wins respect.",
+"Control shows strength.",
+"Focus builds authority.",
+"Standards build value.",
+"Discipline builds power.",
+"Presence commands rooms.",
+"Restraint intimidates.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nSOCIAL REALITIES",
+"lines":[
+"People judge quickly.",
+"People follow status.",
+"People copy success.",
+"People fear power.",
+"People admire control.",
+"People test limits.",
+"People respect strength.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nOVERSHARE",
+"lines":[
+"You reveal plans.",
+"You share emotions.",
+"You talk too much.",
+"You explain goals.",
+"You expose moves.",
+"You vent publicly.",
+"You leak feelings.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 TRUTHS\nABOUT DISCIPLINE",
+"lines":[
+"Discipline beats mood.",
+"Habits beat hype.",
+"Structure beats chaos.",
+"Standards beat feelings.",
+"Focus beats distraction.",
+"Consistency builds identity.",
+"Control builds power.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nRESPECT TRUTHS",
+"lines":[
+"Respect calm minds.",
+"Respect boundaries.",
+"Respect discipline.",
+"Respect presence.",
+"Respect standards.",
+"Respect control.",
+"Respect silence.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nPEOPLE-PLEASE",
+"lines":[
+"You fear saying no.",
+"You over-give.",
+"You avoid tension.",
+"You accept crumbs.",
+"You seek praise.",
+"You tolerate misuse.",
+"You hide needs.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 HARSH\nGROWTH TRUTHS",
+"lines":[
+"Growth feels lonely.",
+"Growth needs sacrifice.",
+"Growth demands discipline.",
+"Growth requires focus.",
+"Growth filters people.",
+"Growth tests patience.",
+"Growth changes circles.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
 
 ]
 
