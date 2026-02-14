@@ -1426,7 +1426,7 @@ content_bank = [
 "Ego needs control.",
 "If you don’t follow now, you’ll probably never see us again."
 ]
-},
+}
 
 ]
 
