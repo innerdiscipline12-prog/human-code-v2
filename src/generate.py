@@ -1,95 +1,116 @@
 from PIL import Image, ImageDraw, ImageFont
-import os
 import textwrap
+import os
 
-# -------- SETTINGS --------
-W, H = 1080, 1350
+# ========= SETTINGS =========
+
+WIDTH = 1080
+HEIGHT = 1350
 BG_COLOR = (0,0,0)
 
-YELLOW = (255,185,0)
-WHITE = (245,245,245)
-GRAY = (90,90,90)
+TITLE_COLOR = (255,190,0)
+TEXT_COLOR = (240,240,240)
+CTA_COLOR = (255,190,0)
+WATERMARK_COLOR = (90,90,90)
 
-TITLE_SIZE = 72
-BODY_SIZE = 42
-CTA_SIZE = 42
-WM_SIZE = 28
+FONT_PATH = "Montserrat-Bold.ttf"
 
-LEFT_MARGIN = 90
-RIGHT_MARGIN = 90
+TITLE_SIZE = 64
+TEXT_SIZE = 36
+CTA_SIZE = 38
+WATERMARK_SIZE = 24
 
-# -------- LOAD FONTS --------
-def load_font(size):
-    try:
-        return ImageFont.truetype("Montserrat-Bold.ttf", size)
-    except:
-        return ImageFont.load_default()
+OUTPUT_FOLDER = "output"
+os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-title_font = load_font(TITLE_SIZE)
-body_font = load_font(BODY_SIZE)
-cta_font = load_font(CTA_SIZE)
-wm_font = load_font(WM_SIZE)
+# ========= SMART WRAP (V4 ELITE) =========
 
-# -------- CONTENT --------
-title = "7 SIGNS YOU MIGHT BE TOXIC TO YOURSELF"
+def smart_wrap(line):
+    line=line.strip()
 
-points = [
+    if len(line)<=55:
+        return line
+
+    if 56<=len(line)<=95:
+        return textwrap.fill(line,width=42)
+
+    if len(line)>95:
+        return textwrap.fill(line,width=36)
+
+    return line
+
+# ========= CONTENT =========
+
+title = "7 SIGNS YOU MIGHT BE\nTOXIC TO YOURSELF"
+
+lines = [
 "You say sorry for things that were never your fault.",
 "You tolerate people who shrink your confidence.",
 "You keep checking your phone, waiting for texts that don’t come.",
 "You treat every piece of feedback like it’s an attack on your worth.",
 "You measure your life against everyone else’s highlight reel.",
 "You sleep more to escape, not to rest.",
-"You agree with everything because you're afraid your real opinion won’t be accepted."
+"You agree with everything because you’re afraid your real opinion won’t be accepted.",
+"If you don’t follow now, you’ll probably never see us again."
 ]
 
-cta = "If you don’t follow now, you’ll probably never see us again."
-watermark = "THE HUMAN CODE"
+# ========= CREATE IMAGE =========
 
-# -------- CREATE IMAGE --------
-img = Image.new("RGB",(W,H),BG_COLOR)
+img = Image.new("RGB",(WIDTH,HEIGHT),BG_COLOR)
 draw = ImageDraw.Draw(img)
 
-y = 70
+title_font = ImageFont.truetype(FONT_PATH,TITLE_SIZE)
+text_font = ImageFont.truetype(FONT_PATH,TEXT_SIZE)
+cta_font = ImageFont.truetype(FONT_PATH,CTA_SIZE)
+watermark_font = ImageFont.truetype(FONT_PATH,WATERMARK_SIZE)
 
-# -------- TITLE --------
-title_lines = textwrap.wrap(title.upper(), width=20)
+# ========= DRAW TITLE =========
 
-for line in title_lines:
-    w = draw.textlength(line, font=title_font)
-    draw.text(((W-w)/2, y), line, font=title_font, fill=YELLOW)
-    y += 80
+y = 120
 
-y += 30
+for tline in title.split("\n"):
+    w = draw.textlength(tline,font=title_font)
+    draw.text(((WIDTH-w)/2,y),tline,font=title_font,fill=TITLE_COLOR)
+    y+=70
 
-# -------- BODY --------
-for i, p in enumerate(points):
-    text = f"{i+1}. {p}"
-    if len(line) > 70:
-    wrapped = textwrap.fill(line, width=38)
-else:
-    wrapped = line
+y+=40
 
-    for line in wrapped:
-        draw.text((LEFT_MARGIN, y), line, font=body_font, fill=WHITE)
-        y += 55
+# ========= DRAW LIST =========
 
-    y += 10
+number=1
 
-# -------- CTA (YELLOW) --------
-y += 10
-cta_lines = textwrap.wrap(f"{len(points)+1}. {cta}", width=40)
+for line in lines:
 
-for line in cta_lines:
-    draw.text((LEFT_MARGIN, y), line, font=cta_font, fill=YELLOW)
-    y += 55
+    wrapped = smart_wrap(line)
 
-# -------- WATERMARK --------
-w = draw.textlength(watermark, font=wm_font)
-draw.text(((W-w)/2, H-70), watermark, font=wm_font, fill=GRAY)
+    font = text_font
+    color = TEXT_COLOR
 
-# -------- SAVE --------
-os.makedirs("output", exist_ok=True)
-img.save("output/viral_post.png")
+    if number==len(lines):
+        font = cta_font
+        color = CTA_COLOR
 
-print("✅ Viral post generated -> output/viral_post.png")
+    wrapped_lines = wrapped.split("\n")
+
+    for wline in wrapped_lines:
+        text = f"{number}. {wline}" if wline==wrapped_lines[0] else wline
+
+        w = draw.textlength(text,font=font)
+        draw.text(((WIDTH-w)/2,y),text,font=font,fill=color)
+
+        y+=50
+
+    y+=25
+    number+=1
+
+# ========= WATERMARK =========
+
+watermark="THE HUMAN CODE"
+w = draw.textlength(watermark,font=watermark_font)
+draw.text(((WIDTH-w)/2,HEIGHT-60),watermark,font=watermark_font,fill=WATERMARK_COLOR)
+
+# ========= SAVE =========
+
+img.save(f"{OUTPUT_FOLDER}/post.png")
+
+print("DONE — Saved to output/post.png")
