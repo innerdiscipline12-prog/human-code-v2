@@ -65,7 +65,10 @@ y += 30
 # -------- BODY --------
 for i, p in enumerate(points):
     text = f"{i+1}. {p}"
-    wrapped = textwrap.wrap(text, width=40)
+    if len(line) > 70:
+    wrapped = textwrap.fill(line, width=38)
+else:
+    wrapped = line
 
     for line in wrapped:
         draw.text((LEFT_MARGIN, y), line, font=body_font, fill=WHITE)
