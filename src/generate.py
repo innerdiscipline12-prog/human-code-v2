@@ -56,7 +56,7 @@ def get_next_post_id(max_posts):
 
 # ========= CONTENT BANK =========
 
-content_bank = {
+content_bank = [
 "title":"7 DARK TRUTHS\nABOUT HUMAN NATURE",
 "lines":[
 "People respect what they fear losing.",
