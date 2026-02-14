@@ -756,6 +756,342 @@ content_bank = {
 ]
 },
 
+{
+"title":"7 DARK TRUTHS\nABOUT TRUST",
+"lines":[
+"Trust is fragile.",
+"Trust is earned slowly.",
+"Trust breaks quietly.",
+"Trust tests patience.",
+"Trust needs proof.",
+"Trust sees patterns.",
+"Trust remembers betrayal.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU’RE\nTOO NICE",
+"lines":[
+"You forgive quickly.",
+"You avoid saying no.",
+"You accept disrespect.",
+"You fear being disliked.",
+"You over-explain.",
+"You tolerate misuse.",
+"You rarely confront.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 REALITIES\nABOUT POWER",
+"lines":[
+"Power stays quiet.",
+"Power sets rules.",
+"Power attracts respect.",
+"Power needs control.",
+"Power values silence.",
+"Power moves carefully.",
+"Power avoids noise.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nMIND TRUTHS",
+"lines":[
+"The mind fears change.",
+"The mind seeks comfort.",
+"The mind resists pain.",
+"The mind avoids truth.",
+"The mind protects ego.",
+"The mind hides fear.",
+"The mind needs control.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU’RE\nEASY TO MANIPULATE",
+"lines":[
+"You hate conflict.",
+"You trust words fast.",
+"You avoid boundaries.",
+"You fear rejection.",
+"You seek approval.",
+"You ignore red flags.",
+"You forgive patterns.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 HARSH TRUTHS\nABOUT LIFE",
+"lines":[
+"Life isn’t fair.",
+"Timing beats talent.",
+"Effort beats excuses.",
+"Results change respect.",
+"Comfort slows growth.",
+"Pain teaches faster.",
+"Reality checks ego.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nHUMAN HABITS",
+"lines":[
+"People compare silently.",
+"People judge quickly.",
+"People envy quietly.",
+"People test limits.",
+"People watch success.",
+"People respect winners.",
+"People follow status.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nLACK BOUNDARIES",
+"lines":[
+"You say yes fast.",
+"You fear saying no.",
+"You accept delays.",
+"You over-give time.",
+"You ignore discomfort.",
+"You tolerate disrespect.",
+"You fear distance.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 REALITIES\nABOUT FOCUS",
+"lines":[
+"Focus is rare.",
+"Focus builds value.",
+"Focus needs discipline.",
+"Focus ignores noise.",
+"Focus creates power.",
+"Focus builds mastery.",
+"Focus beats talent.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK TRUTHS\nABOUT JEALOUSY",
+"lines":[
+"Jealousy hides praise.",
+"Jealousy watches silently.",
+"Jealousy copies success.",
+"Jealousy masks envy.",
+"Jealousy follows status.",
+"Jealousy studies winners.",
+"Jealousy fears comparison.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU’RE\nOVERTHINKING",
+"lines":[
+"You replay moments.",
+"You fear mistakes.",
+"You doubt choices.",
+"You imagine outcomes.",
+"You delay decisions.",
+"You seek certainty.",
+"You avoid risk.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 TRUTHS\nABOUT TIME",
+"lines":[
+"Time reveals truth.",
+"Time exposes lies.",
+"Time filters people.",
+"Time shows loyalty.",
+"Time tests patience.",
+"Time builds wisdom.",
+"Time rewards discipline.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nSOCIAL TRUTHS",
+"lines":[
+"Image shapes respect.",
+"Presence shifts value.",
+"Silence attracts attention.",
+"Scarcity builds demand.",
+"Confidence gains power.",
+"Calm wins rooms.",
+"Control commands respect.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nAVOID GROWTH",
+"lines":[
+"You choose comfort.",
+"You fear failure.",
+"You delay action.",
+"You blame timing.",
+"You avoid risk.",
+"You seek easy paths.",
+"You resist change.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 REALITIES\nABOUT CONFIDENCE",
+"lines":[
+"Confidence is built.",
+"Confidence needs reps.",
+"Confidence shows calm.",
+"Confidence rejects noise.",
+"Confidence sets tone.",
+"Confidence attracts respect.",
+"Confidence needs discipline.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nSELF TRUTHS",
+"lines":[
+"You know your limits.",
+"You hide your fears.",
+"You doubt silently.",
+"You want approval.",
+"You fear judgment.",
+"You seek comfort.",
+"You avoid discomfort.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU’RE\nTOO AVAILABLE",
+"lines":[
+"You reply instantly.",
+"You wait on others.",
+"You cancel plans.",
+"You accept crumbs.",
+"You fear missing out.",
+"You chase replies.",
+"You tolerate delays.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 TRUTHS\nABOUT DISCIPLINE",
+"lines":[
+"Discipline beats mood.",
+"Discipline builds identity.",
+"Discipline needs structure.",
+"Discipline rejects excuses.",
+"Discipline builds power.",
+"Discipline earns respect.",
+"Discipline filters people.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nSUCCESS REALITIES",
+"lines":[
+"Success isolates.",
+"Success attracts envy.",
+"Success tests loyalty.",
+"Success raises standards.",
+"Success filters circles.",
+"Success changes treatment.",
+"Success reveals motives.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nSEEK CONTROL",
+"lines":[
+"You plan everything.",
+"You fear chaos.",
+"You dislike surprises.",
+"You need certainty.",
+"You manage outcomes.",
+"You track details.",
+"You avoid risk.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 REALITIES\nABOUT FAILURE",
+"lines":[
+"Failure teaches fast.",
+"Failure builds grit.",
+"Failure reveals gaps.",
+"Failure tests ego.",
+"Failure demands growth.",
+"Failure builds wisdom.",
+"Failure shapes discipline.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nEGO TRUTHS",
+"lines":[
+"Ego hates blame.",
+"Ego fears truth.",
+"Ego avoids growth.",
+"Ego seeks praise.",
+"Ego resists change.",
+"Ego hides weakness.",
+"Ego needs control.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU’RE\nMENTALLY STRONG",
+"lines":[
+"You stay calm.",
+"You delay reaction.",
+"You control emotion.",
+"You accept truth.",
+"You focus long.",
+"You respect discipline.",
+"You value silence.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 HARSH\nREALITY LESSONS",
+"lines":[
+"Results change respect.",
+"Excuses change nothing.",
+"Silence shows strength.",
+"Focus builds power.",
+"Consistency wins long.",
+"Discipline beats hype.",
+"Standards build value.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
 ]
 
 
