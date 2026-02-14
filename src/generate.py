@@ -14,7 +14,7 @@ GRAY = (90, 90, 90)
 FONT_PATH = "src/Montserrat-Bold.ttf"
 
 
-TITLE_SIZE = 80
+TITLE_SIZE = 82  # ~8% smaller
 BODY_SIZE = 44
 CTA_SIZE = 48
 WATERMARK_SIZE = 28
