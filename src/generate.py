@@ -56,225 +56,357 @@ def get_next_post_id(max_posts):
 
 # ========= CONTENT BANK =========
 
-content_bank = titles = [
-
-"7 DARK TRUTHS ABOUT HUMAN NATURE",
-"7 SIGNS PEOPLE READ YOU EASILY",
-"7 UNCOMFORTABLE REALITIES",
-"7 SIGNS YOU’RE EASY TO REPLACE",
-"7 DARK TRUTHS ABOUT ATTENTION",
-"7 SIGNS PEOPLE TEST YOUR LIMITS",
-"7 REALITIES ABOUT RESPECT",
-"7 SIGNS YOU’RE TOO PREDICTABLE",
-"7 DARK TRUTHS ABOUT SOCIAL LIFE",
-"7 SIGNS PEOPLE DON’T FEAR LOSING YOU",
-"7 REALITIES ABOUT STATUS",
-"7 SIGNS YOU’RE TOO NICE",
-"7 DARK TRUTHS ABOUT FRIENDSHIPS",
-"7 SIGNS YOU OVERVALUE PEOPLE",
-"7 REALITIES ABOUT POWER",
-"7 SIGNS YOU’RE EMOTIONALLY READABLE",
-"7 DARK TRUTHS ABOUT LOYALTY",
-"7 SIGNS YOU’RE TAKEN FOR GRANTED",
-"7 REALITIES ABOUT HUMAN EGO",
-"7 SIGNS YOU SEEK Approval",
-"7 DARK TRUTHS ABOUT CLOSENESS",
-"7 SIGNS PEOPLE USE YOU QUIETLY",
-"7 REALITIES ABOUT TRUST",
-"7 SIGNS YOU’RE TOO AVAILABLE",
-"7 DARK TRUTHS ABOUT KINDNESS",
-"7 SIGNS YOU LOOK EASY TO HANDLE",
-"7 REALITIES ABOUT PERCEPTION",
-"7 SIGNS PEOPLE DON’T TAKE YOU SERIOUSLY",
-"7 DARK TRUTHS ABOUT VALUE",
-"7 SIGNS YOU’RE TOO OPEN",
-"7 REALITIES ABOUT HUMAN INTEREST",
-"7 SIGNS YOU’RE EASY TO READ",
-"7 DARK TRUTHS ABOUT PEOPLE",
-"7 SIGNS YOU SHOW YOUR HAND",
-"7 REALITIES ABOUT PRIORITY",
-"7 SIGNS YOU’RE AN OPTION",
-"7 DARK TRUTHS ABOUT ATTACHMENT",
-"7 SIGNS YOU’RE TOO FORGIVING",
-"7 REALITIES ABOUT REPLACEMENT",
-"7 SIGNS YOU’RE TOO ACCESSIBLE",
-"7 DARK TRUTHS ABOUT EFFORT",
-"7 SIGNS YOU LOOK LOW-RISK",
-"7 REALITIES ABOUT SOCIAL VALUE",
-"7 SIGNS YOU’RE TOO TRUSTING",
-"7 DARK TRUTHS ABOUT RELATIONSHIPS",
-"7 SIGNS YOU’RE EASY TO LOSE",
-"7 REALITIES ABOUT HUMAN FOCUS",
-"7 SIGNS YOU’RE NOT A PRIORITY",
-"7 DARK TRUTHS ABOUT TIME",
-"7 SIGNS YOU’RE QUIETLY DISRESPECTED"
+content_bank = {
+"title":"7 DARK TRUTHS\nABOUT HUMAN NATURE",
+"lines":[
+"People respect what they fear losing.",
+"Attention is the real currency.",
+"Silence reveals more than words.",
+"Most loyalty is conditional.",
+"Comfort kills ambition.",
+"People test limits quietly.",
+"Status changes treatment.",
+"If you don’t follow now, you’ll probably never see us again."
 ]
+},
 
-line_pool = [
-
-"People value what feels scarce.",
-"Familiarity reduces perceived value.",
-"Attention follows status.",
-"People test limits silently.",
-"Kindness without boundaries invites use.",
-"Availability lowers urgency.",
-"Predictability reduces intrigue.",
-"Silence makes people curious.",
-"Too much access removes mystery.",
-"People respect what they can lose.",
-"Emotional reactions reveal leverage.",
-"Over-explaining signals insecurity.",
-"Quick replies lower perceived demand.",
-"People mirror your standards.",
-"Low boundaries attract pressure.",
-"Forgiveness without change invites repeats.",
-"People protect advantage first.",
-"Interest follows perceived value.",
-"Consistency without respect breeds comfort.",
-"People invest where reward exists.",
-"Attention is a social currency.",
-"People notice withdrawal more than presence.",
-"Too much honesty removes leverage.",
-"People read patterns quickly.",
-"Soft limits get crossed.",
-"People remember how you react.",
-"Desperation is sensed, not heard.",
-"People test tolerance quietly.",
-"Low friction lowers value.",
-"People respect resistance.",
-"Emotional control raises presence.",
-"People chase what feels distant.",
-"Familiar access lowers excitement.",
-"People protect their interests first.",
-"Too much availability invites delay.",
-"People reward perceived status.",
-"Respect grows with boundaries.",
-"People value what feels selective.",
-"Calm detachment shifts power.",
-"People track your reactions.",
-"Over-giving creates imbalance.",
-"People notice who adjusts.",
-"Unclear standards invite trials.",
-"People invest where effort matters.",
-"Too much openness removes edge.",
-"People value self-control.",
-"Withdrawal reveals true interest.",
-"People respond to limits.",
-"Uncertainty creates attention.",
-"People protect leverage.",
-"Control attracts respect.",
-"People read emotional cues fast.",
-"Distance increases perceived value.",
-"People test quiet personalities.",
-"Reactions teach others how to treat you.",
-"People notice restraint.",
-"Value rises with selectiveness.",
-"People respect self-containment.",
-"Over-availability looks replaceable.",
-"People track social worth.",
-"Attention moves to rarity.",
-"People respect firmness.",
-"Softness invites testing.",
-"People adjust to your tolerance.",
-"Control shapes perception.",
-"People read your pace.",
-"Silence builds weight.",
-"People value calm presence.",
-"Quick access lowers curiosity.",
-"People invest selectively.",
-"Boundaries define value.",
-"People measure reactions.",
-"Too much clarity removes tension.",
-"People protect their image.",
-"Status influences attention.",
-"People respect emotional discipline.",
-"Scarcity shapes interest.",
-"People track social signals.",
-"Calm detachment signals strength.",
-"People mirror your standards.",
-"Firm limits deter misuse.",
-"People value composure.",
-"Predictability reduces impact.",
-"People notice who stays steady.",
-"Emotional restraint builds gravity.",
-"People respect self-control.",
-"Too much warmth invites assumption.",
-"People value selective energy.",
-"Consistency builds quiet power.",
-"People notice emotional shifts.",
-"Distance sharpens interest.",
-"People value restraint.",
-"Control creates presence.",
-"People read subtle cues.",
-"Selective access raises value.",
-"People respect calm authority.",
-"Too much effort lowers mystery.",
-"People value perceived demand.",
-"Composure builds influence.",
-"People notice detachment.",
-"Scarcity increases attention.",
-"People value emotional control.",
-"Measured responses build weight.",
-"People read behavior deeply.",
-"Boundaries create respect.",
-"People track reactions.",
-"Silence adds presence.",
-"People value limits.",
-"Composure signals strength.",
-"People read consistency.",
-"Emotional control attracts respect.",
-"Distance creates curiosity.",
-"People value firmness.",
-"Control shapes reputation.",
-"People notice selectiveness.",
-"Restraint builds power.",
-"People respect boundaries.",
-"Calm presence influences perception.",
-"People value quiet confidence.",
-"Too much exposure lowers intrigue.",
-"People value mystery.",
-"Controlled energy attracts respect.",
-"People notice who withdraws.",
-"Scarcity drives attention.",
-"People respect discipline.",
-"Presence grows with control.",
-"People value calm strength.",
-"Detachment changes dynamics.",
-"People respect limits.",
-"Composure holds power.",
-"People value subtlety.",
-"Measured distance builds value.",
-"People notice self-control.",
-"Restraint earns respect.",
-"People value steadiness.",
-"Quiet discipline builds presence.",
-"People track emotional stability.",
-"Control attracts attention.",
-"People respect calm minds.",
-"Selective energy signals value.",
-"People value distance.",
-"Composure influences perception.",
-"Calm control builds gravity.",
-"People value inner restraint.",
-"Stability commands respect.",
-"People respect controlled presence.",
-"Detachment reveals value.",
-"Control defines power.",
-"People respect calm discipline."
+{
+"title":"7 SIGNS YOU’RE\nEASY TO REPLACE",
+"lines":[
+"You always agree.",
+"You fear being disliked.",
+"You over-explain yourself.",
+"You tolerate disrespect.",
+"You chase validation.",
+"You avoid conflict.",
+"You accept bare minimum.",
+"If you don’t follow now, you’ll probably never see us again."
 ]
+},
 
-cta_pool = [
+{
+"title":"7 REALITIES\nABOUT STATUS",
+"lines":[
+"Status changes tone.",
+"People respect power.",
+"Visibility creates value.",
+"Success attracts loyalty.",
+"Money amplifies voice.",
+"Results silence doubt.",
+"Perception shapes treatment.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
 
-"Follow for deeper human truths.",
-"Follow for dark psychology insights.",
-"Follow if you observe people closely.",
-"Follow for real human behavior.",
-"Follow for quiet psychological truths.",
-"Follow for deeper awareness.",
-"Follow if you value perception.",
-"Follow for mental sharpness.",
-"Follow for psychological insight.",
-"Follow for human nature truths."
+{
+"title":"7 BRUTAL\nSOCIAL TRUTHS",
+"lines":[
+"Nice is often ignored.",
+"Confidence beats kindness.",
+"Attention favors boldness.",
+"People follow strength.",
+"Softness gets tested.",
+"Fear drives respect.",
+"Silence intimidates.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nSEEK APPROVAL",
+"lines":[
+"You hate saying no.",
+"You explain your choices.",
+"You fear rejection.",
+"You copy others.",
+"You doubt decisions.",
+"You need praise.",
+"You avoid judgment.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 HARSH\nLIFE REALITIES",
+"lines":[
+"Effort isn’t always rewarded.",
+"People forget favors.",
+"Fairness is rare.",
+"Comfort traps growth.",
+"Trust is fragile.",
+"Respect must be earned.",
+"Silence speaks power.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK TRUTHS\nABOUT FRIENDS",
+"lines":[
+"Some compete quietly.",
+"Some celebrate your fall.",
+"Some envy your growth.",
+"Some stay for benefit.",
+"Some copy your moves.",
+"Some hide resentment.",
+"Few are genuine.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nOVERCARE",
+"lines":[
+"You reply instantly.",
+"You prioritize others.",
+"You forgive too fast.",
+"You ignore red flags.",
+"You chase closure.",
+"You fear distance.",
+"You accept crumbs.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 POWER\nREALITIES",
+"lines":[
+"Control earns respect.",
+"Calm signals power.",
+"Silence dominates.",
+"Boundaries command value.",
+"Presence speaks first.",
+"Restraint intimidates.",
+"Focus builds authority.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK TRUTHS\nABOUT PEOPLE",
+"lines":[
+"People test limits.",
+"People copy winners.",
+"People follow status.",
+"People respect scarcity.",
+"People chase value.",
+"People fear loss.",
+"People admire power.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU’RE\nTOO AVAILABLE",
+"lines":[
+"You answer anytime.",
+"You cancel plans.",
+"You wait on others.",
+"You accept last-minute.",
+"You chase attention.",
+"You tolerate delays.",
+"You fear missing out.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 TRUTHS\nABOUT RESPECT",
+"lines":[
+"Respect silence.",
+"Respect boundaries.",
+"Respect control.",
+"Respect standards.",
+"Respect discipline.",
+"Respect presence.",
+"Respect restraint.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 REALITIES\nABOUT VALUE",
+"lines":[
+"Scarcity increases value.",
+"Silence builds mystery.",
+"Control shows strength.",
+"Distance creates respect.",
+"Focus earns status.",
+"Standards filter people.",
+"Presence commands attention.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nPSYCHOLOGY TRUTHS",
+"lines":[
+"People mirror confidence.",
+"People test weakness.",
+"People chase status.",
+"People value scarcity.",
+"People respect control.",
+"People admire calm.",
+"People follow power.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nLACK BOUNDARIES",
+"lines":[
+"You say yes fast.",
+"You fear conflict.",
+"You accept disrespect.",
+"You avoid saying no.",
+"You over-give.",
+"You tolerate misuse.",
+"You explain limits.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 HARSH\nRELATIONSHIP TRUTHS",
+"lines":[
+"Effort reveals interest.",
+"Consistency shows care.",
+"Silence shows distance.",
+"Respect shows love.",
+"Time shows priority.",
+"Actions show truth.",
+"Excuses show intent.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 TRUTHS\nABOUT DISCIPLINE",
+"lines":[
+"Discipline beats mood.",
+"Standards beat feelings.",
+"Structure beats chaos.",
+"Habits beat motivation.",
+"Consistency beats hype.",
+"Control beats impulse.",
+"Focus beats distraction.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS\nYOU’RE TOO NICE",
+"lines":[
+"You avoid saying no.",
+"You forgive easily.",
+"You tolerate disrespect.",
+"You seek approval.",
+"You fear tension.",
+"You over-help.",
+"You accept less.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 REALITIES\nABOUT POWER",
+"lines":[
+"Power is quiet.",
+"Power is calm.",
+"Power is controlled.",
+"Power is patient.",
+"Power is focused.",
+"Power is reserved.",
+"Power is disciplined.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nSUCCESS TRUTHS",
+"lines":[
+"Success isolates.",
+"Success attracts envy.",
+"Success reveals loyalty.",
+"Success changes circles.",
+"Success demands sacrifice.",
+"Success tests character.",
+"Success exposes people.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nOVER-TRUST",
+"lines":[
+"You share quickly.",
+"You believe words.",
+"You ignore signs.",
+"You defend liars.",
+"You trust easily.",
+"You forgive patterns.",
+"You expect honesty.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 TRUTHS\nABOUT SILENCE",
+"lines":[
+"Silence intimidates.",
+"Silence controls rooms.",
+"Silence reveals people.",
+"Silence protects power.",
+"Silence builds mystery.",
+"Silence signals strength.",
+"Silence speaks volumes.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 DARK\nLOYALTY TRUTHS",
+"lines":[
+"Loyalty is tested.",
+"Loyalty is rare.",
+"Loyalty is quiet.",
+"Loyalty needs respect.",
+"Loyalty needs value.",
+"Loyalty needs honesty.",
+"Loyalty needs boundaries.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 SIGNS YOU\nCHASE PEOPLE",
+"lines":[
+"You text first.",
+"You double text.",
+"You wait replies.",
+"You excuse behavior.",
+"You over-invest.",
+"You seek attention.",
+"You fear distance.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+{
+"title":"7 HARSH\nEGO TRUTHS",
+"lines":[
+"Ego blocks growth.",
+"Ego fears truth.",
+"Ego hates silence.",
+"Ego seeks praise.",
+"Ego avoids blame.",
+"Ego rejects limits.",
+"Ego resists change.",
+"If you don’t follow now, you’ll probably never see us again."
+]
+},
+
+
 ]
 
 
