@@ -1,137 +1,81 @@
 import os
-import random
 from PIL import Image, ImageDraw, ImageFont
-import imageio
+from moviepy.editor import *
 
 # ========= SETTINGS =========
-
 W, H = 1080, 1920
 BG = (0,0,0)
 YELLOW = (255,190,0)
 WHITE = (240,240,240)
-GREY = (150,150,150)
 
-TITLE_FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-BODY_FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+TITLE = "SELF-RESPECT CHECK"
+
+LINES = [
+"1. You ignore red flags",
+"2. You seek constant approval",
+"3. You chase those ignoring you",
+"4. You accept less than you give",
+"5. You avoid hard conversations",
+"6. If you scroll past now, this may never find you again."
+]
+
+WATERMARK = "THE HUMAN CODE"
 
 os.makedirs("output", exist_ok=True)
 
-quotes = [
-"You tolerate repeated lies",
-"You ignore red flags",
-"You stay where you're drained",
-"You chase those ignoring you",
-"You accept less than you give",
-"You seek constant approval",
-"You avoid hard conversations",
-"You excuse disrespect"
-]
+# ========= FONT =========
+# Default bold system font
+title_font = ImageFont.truetype("DejaVuSans-Bold.ttf", 90)
+text_font = ImageFont.truetype("DejaVuSans-Bold.ttf", 56)
+wm_font = ImageFont.truetype("DejaVuSans-Bold.ttf", 36)
 
-CTA = "If you scroll past now,\nthis may never find you again."
-
-# ========= HELPERS =========
-
-def wrap(draw, text, font, max_w):
-    words = text.split()
-    lines=[]
-    cur=""
-    for w in words:
-        test = cur+" "+w if cur else w
-        if draw.textlength(test,font=font) <= max_w:
-            cur=test
-        else:
-            lines.append(cur)
-            cur=w
-    if cur: lines.append(cur)
-    return lines
-
-# ========= IMAGE =========
-
-def make_image():
+# ========= IMAGE FUNCTION =========
+def make_image(lines, filename):
     img = Image.new("RGB",(W,H),BG)
     d = ImageDraw.Draw(img)
 
-    title_f = ImageFont.truetype(TITLE_FONT,80)
-    body_f = ImageFont.truetype(BODY_FONT,56)
-    cta_f = ImageFont.truetype(BODY_FONT,42)
-
     # Title
-    d.text((W//2,120),"TRUTHS ABOUT SELF-RESPECT",
-           fill=YELLOW,font=title_f,anchor="mm")
+    d.text((80,120), TITLE, font=title_font, fill=YELLOW)
 
-    y=350
-    chosen=random.sample(quotes,5)
+    y = 380
+    for line in lines:
+        d.text((120,y), line, font=text_font, fill=WHITE)
+        y += 120
 
-    for i,q in enumerate(chosen,1):
-        text=f"{i}. {q}"
-        lines=wrap(d,text,body_f,900)
-        for line in lines:
-            d.text((W//2,y),line,fill=WHITE,font=body_f,anchor="mm")
-            y+=70
-        y+=25
+    # Watermark bottom center
+    d.text((W//2-170,H-120), WATERMARK, font=wm_font, fill=(120,120,120))
 
-    # CTA
-    d.multiline_text((W//2,H-180),CTA,
-                     fill=GREY,font=cta_f,
-                     anchor="mm",align="center")
+    img.save(f"output/{filename}")
 
-    img.save("output/image1.png")
+# ========= MAIN IMAGE =========
+make_image(LINES, "image.png")
 
 # ========= CAROUSEL =========
+chunks = [
+LINES[0:2],
+LINES[2:4],
+LINES[4:6],
+]
 
-def make_carousel():
-    title_f = ImageFont.truetype(TITLE_FONT,72)
-    body_f = ImageFont.truetype(BODY_FONT,56)
-
-    selected=random.sample(quotes,6)
-
-    for slide in range(3):
-        img=Image.new("RGB",(W,H),BG)
-        d=ImageDraw.Draw(img)
-
-        d.text((W//2,140),"SELF-RESPECT CHECK",
-               fill=YELLOW,font=title_f,anchor="mm")
-
-        y=400
-        for i in range(2):
-            q=selected[slide*2+i]
-            text=f"{slide*2+i+1}. {q}"
-            d.text((W//2,y),text,
-                   fill=WHITE,font=body_f,anchor="mm")
-            y+=140
-
-        img.save(f"output/carousel_{slide+1}.png")
+for i,c in enumerate(chunks):
+    make_image(c, f"carousel_{i+1}.png")
 
 # ========= REEL =========
+clips = []
+for line in LINES:
+    txt = TextClip(
+        line,
+        fontsize=80,
+        font="DejaVu-Sans-Bold",
+        color="white",
+        size=(900,None),
+        method="caption"
+    ).set_position("center").set_duration(1.4)
 
-def make_reel():
-    frames=[]
-    body_f = ImageFont.truetype(BODY_FONT,72)
+    bg = ColorClip((W,H), color=(0,0,0), duration=1.4)
+    clips.append(CompositeVideoClip([bg,txt]))
 
-    reel_lines=[
-        "You become what",
-        "you tolerate.",
-        "",
-        "Choose better."
-    ]
+final = concatenate_videoclips(clips, method="compose")
+final.write_videofile("output/reel.mp4", fps=24)
 
-    for line in reel_lines:
-        img=Image.new("RGB",(W,H),BG)
-        d=ImageDraw.Draw(img)
-
-        d.text((W//2,H//2),line,
-               fill=WHITE,font=body_f,anchor="mm")
-
-        frames.append(img)
-
-    # convert to video
-    video_frames=[frame for frame in frames for _ in range(30)]
-    imageio.mimsave("output/reel.mp4", video_frames, fps=10)
-
-# ========= RUN =========
-
-make_image()
-make_carousel()
-make_reel()
-
-print("DONE ✅")
+print("DONE.")
