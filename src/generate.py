@@ -1,83 +1,100 @@
 import os
 import random
-from moviepy.editor import *
 from PIL import Image, ImageDraw, ImageFont
 
-W, H = 1080, 1080
-RW, RH = 1080, 1920
-DURATION = 7
+# ========== SETTINGS ==========
+WIDTH = 1080
+HEIGHT = 1350
 
-os.makedirs("output/images", exist_ok=True)
-os.makedirs("output/reels", exist_ok=True)
+YELLOW = (255, 193, 7)
+WHITE = (255, 255, 255)
+GREY = (170, 170, 170)
 
-quotes = [
-    "You become what you tolerate.",
-    "Discipline reveals priorities.",
-    "Silence exposes truth.",
-    "Habits decide futures.",
-    "Attention shapes reality.",
-    "Consistency builds identity.",
-    "Control your inputs.",
+OUTPUT_DIR = "output"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+# ========== DATA ==========
+HEADLINES = [
+    "SIGNS YOU LACK BOUNDARIES",
+    "RULES OF HUMAN NATURE",
+    "TRUTHS ABOUT SELF-RESPECT",
+    "SIGNS YOU NEED DISCIPLINE",
+    "HARD TRUTHS ABOUT LIFE"
 ]
 
-CTA = "If you scroll past now, this may never find you again."
+LINES = [
+    "You excuse disrespect",
+    "You ignore red flags",
+    "You fear being disliked",
+    "You over-explain yourself",
+    "You accept less than you give",
+    "You avoid hard conversations",
+    "You seek constant approval",
+    "You tolerate repeated lies",
+    "You chase those ignoring you",
+    "You stay where you're drained",
+]
 
-def font(size):
-    try:
-        return ImageFont.truetype("DejaVuSans-Bold.ttf", size)
-    except:
-        return ImageFont.load_default()
+CTAS = [
+    "If you scroll past now,\nthis may never find you again.",
+    "Few apply this.\nMany ignore it.",
+    "Most won't remember this.\nDisciplined ones will."
+]
 
-def make_image(text, size=(1080,1080)):
-    img = Image.new("RGB", size, (10,10,10))
+# ========== FONTS ==========
+try:
+    FONT_HEAD = ImageFont.truetype("DejaVuSans-Bold.ttf", 64)
+    FONT_BODY = ImageFont.truetype("DejaVuSans.ttf", 40)
+    FONT_CTA = ImageFont.truetype("DejaVuSans.ttf", 30)
+except:
+    FONT_HEAD = FONT_BODY = FONT_CTA = ImageFont.load_default()
+
+# ========== HELPERS ==========
+def gradient_bg():
+    img = Image.new("RGB", (WIDTH, HEIGHT), (10,10,10))
     draw = ImageDraw.Draw(img)
-    f = font(60)
 
-    words = text.split()
-    lines, line = [], ""
-    for w in words:
-        if len(line+w) < 16:
-            line += w+" "
-        else:
-            lines.append(line)
-            line = w+" "
-    lines.append(line)
-
-    y = size[1]//2 - 100
-    for l in lines:
-        bbox = draw.textbbox((0,0), l, font=f)
-        w = bbox[2]-bbox[0]
-        draw.text(((size[0]-w)//2,y), l, fill="white", font=f)
-        y+=80
+    for y in range(HEIGHT):
+        shade = 10 + int((y/HEIGHT)*20)
+        draw.line((0,y,WIDTH,y), fill=(shade,shade,shade))
 
     return img
 
-# ---------- GENERATE ----------
+def center_text(draw, text, y, font, color):
+    bbox = draw.textbbox((0,0), text, font=font)
+    w = bbox[2] - bbox[0]
+    x = (WIDTH - w)//2
+    draw.text((x,y), text, font=font, fill=color)
+
+# ========== GENERATOR ==========
+def make_post(i):
+    img = gradient_bg()
+    draw = ImageDraw.Draw(img)
+
+    headline = random.choice(HEADLINES)
+    lines = random.sample(LINES, 5)
+    cta = random.choice(CTAS)
+
+    # Headline
+    center_text(draw, headline, 120, FONT_HEAD, YELLOW)
+
+    # Body
+    y = 300
+    for line in lines:
+        txt = f"• {line}"
+        center_text(draw, txt, y, FONT_BODY, WHITE)
+        y += 80
+
+    # CTA
+    for part in cta.split("\n"):
+        center_text(draw, part, HEIGHT-180, FONT_CTA, GREY)
+        HEIGHT_OFFSET = 40
+        center_text(draw, part, HEIGHT-180, FONT_CTA, GREY)
+
+    img.save(f"{OUTPUT_DIR}/post_{i+1}.png")
+
+# ========== RUN ==========
 for i in range(5):
+    make_post(i)
 
-    quote = random.choice(quotes)
-
-    # IMAGE POST
-    img = make_image(quote,(W,H))
-    img_path = f"output/images/post_{i+1}.png"
-    img.save(img_path)
-
-    # REEL
-    reel_img = make_image(quote,(RW,RH))
-    cta_img = make_image(CTA,(RW,RH))
-
-    reel_img.save("temp1.png")
-    cta_img.save("temp2.png")
-
-    clip1 = ImageClip("temp1.png").set_duration(DURATION-2)
-    clip2 = ImageClip("temp2.png").set_duration(2)
-
-    final = concatenate_videoclips([clip1,clip2])
-    final.write_videofile(
-        f"output/reels/reel_{i+1}.mp4",
-        fps=24,
-        codec="libx264",
-        audio=False
-    )
-
-print("DONE ✅ 5 images + 5 reels created")
+print("V5 images generated.")
