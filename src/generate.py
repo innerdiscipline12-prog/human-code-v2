@@ -1,16 +1,15 @@
 import os
 from PIL import Image, ImageDraw, ImageFont
-from moviepy.editor import *
+from moviepy.editor import ImageSequenceClip
 
-# ========= SETTINGS =========
-W, H = 1080, 1920
-BG = (0,0,0)
-YELLOW = (255,190,0)
-WHITE = (240,240,240)
+W,H = 1080,1920
+BG=(0,0,0)
+YELLOW=(255,190,0)
+WHITE=(240,240,240)
 
-TITLE = "SELF-RESPECT CHECK"
+TITLE="SELF-RESPECT CHECK"
 
-LINES = [
+LINES=[
 "1. You ignore red flags",
 "2. You seek constant approval",
 "3. You chase those ignoring you",
@@ -19,63 +18,48 @@ LINES = [
 "6. If you scroll past now, this may never find you again."
 ]
 
-WATERMARK = "THE HUMAN CODE"
+os.makedirs("output",exist_ok=True)
 
-os.makedirs("output", exist_ok=True)
+title_font=ImageFont.truetype("DejaVuSans-Bold.ttf",90)
+text_font=ImageFont.truetype("DejaVuSans-Bold.ttf",60)
+wm_font=ImageFont.truetype("DejaVuSans-Bold.ttf",36)
 
-# ========= FONT =========
-# Default bold system font
-title_font = ImageFont.truetype("DejaVuSans-Bold.ttf", 90)
-text_font = ImageFont.truetype("DejaVuSans-Bold.ttf", 56)
-wm_font = ImageFont.truetype("DejaVuSans-Bold.ttf", 36)
+# ===== IMAGE =====
+def make_img(lines,name):
+    img=Image.new("RGB",(W,H),BG)
+    d=ImageDraw.Draw(img)
 
-# ========= IMAGE FUNCTION =========
-def make_image(lines, filename):
-    img = Image.new("RGB",(W,H),BG)
-    d = ImageDraw.Draw(img)
+    d.text((80,120),TITLE,font=title_font,fill=YELLOW)
 
-    # Title
-    d.text((80,120), TITLE, font=title_font, fill=YELLOW)
+    y=380
+    for l in lines:
+        d.text((120,y),l,font=text_font,fill=WHITE)
+        y+=120
 
-    y = 380
-    for line in lines:
-        d.text((120,y), line, font=text_font, fill=WHITE)
-        y += 120
+    d.text((W//2-160,H-120),"THE HUMAN CODE",font=wm_font,fill=(120,120,120))
+    img.save(f"output/{name}")
 
-    # Watermark bottom center
-    d.text((W//2-170,H-120), WATERMARK, font=wm_font, fill=(120,120,120))
+make_img(LINES,"image.png")
 
-    img.save(f"output/{filename}")
-
-# ========= MAIN IMAGE =========
-make_image(LINES, "image.png")
-
-# ========= CAROUSEL =========
-chunks = [
-LINES[0:2],
-LINES[2:4],
-LINES[4:6],
-]
-
+# ===== CAROUSEL =====
+chunks=[LINES[0:2],LINES[2:4],LINES[4:6]]
 for i,c in enumerate(chunks):
-    make_image(c, f"carousel_{i+1}.png")
+    make_img(c,f"carousel_{i+1}.png")
 
-# ========= REEL =========
-clips = []
+# ===== REEL =====
+frames=[]
 for line in LINES:
-    txt = TextClip(
-        line,
-        fontsize=80,
-        font="DejaVu-Sans-Bold",
-        color="white",
-        size=(900,None),
-        method="caption"
-    ).set_position("center").set_duration(1.4)
+    img=Image.new("RGB",(W,H),BG)
+    d=ImageDraw.Draw(img)
 
-    bg = ColorClip((W,H), color=(0,0,0), duration=1.4)
-    clips.append(CompositeVideoClip([bg,txt]))
+    d.text((80,120),TITLE,font=title_font,fill=YELLOW)
+    d.text((120,900),line,font=text_font,fill=WHITE)
 
-final = concatenate_videoclips(clips, method="compose")
-final.write_videofile("output/reel.mp4", fps=24)
+    frame_path=f"output/frame_{len(frames)}.png"
+    img.save(frame_path)
+    frames.append(frame_path)
 
-print("DONE.")
+clip=ImageSequenceClip(frames,fps=1)
+clip.write_videofile("output/reel.mp4",fps=24)
+
+print("DONE")
