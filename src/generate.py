@@ -37,22 +37,27 @@ def smart_wrap(line):
     if len(line)>95: return textwrap.fill(line,width=36)
     return line
 
-# ========= AUTO MEMORY =========
+# ========= MEMORY SYSTEM =========
+
+MEMORY_FILE = "memory.txt"
 
 def get_next_post_id(max_posts):
     if not os.path.exists(MEMORY_FILE):
-        with open(MEMORY_FILE,"w") as f: f.write("0")
+        with open(MEMORY_FILE, "w") as f:
+            f.write("0")
 
-    with open(MEMORY_FILE,"r") as f:
-        last=int(f.read().strip())
+    with open(MEMORY_FILE, "r") as f:
+        last = int(f.read().strip())
 
-    nxt=last+1
-    if nxt>=max_posts: nxt=0
+    nxt = last + 1
+    if nxt >= max_posts:
+        nxt = 0
 
-    with open(MEMORY_FILE,"w") as f:
+    with open(MEMORY_FILE, "w") as f:
         f.write(str(nxt))
 
     return nxt
+
 
 # ========= CONTENT BANK =========
 
