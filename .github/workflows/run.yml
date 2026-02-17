@@ -3,7 +3,7 @@ name: Generate Content
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 6 * * *"  # daily 06:00 UTC (adjust if you want)
+    - cron: "0 6 * * *"  # daily 06:00 UTC
 
 jobs:
   build:
@@ -22,21 +22,6 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      # ✅ Download the previous memory/state so it doesn't reset
-      - name: Download state (if exists)
-        uses: actions/download-artifact@v4
-        with:
-          name: human-code-state
-          path: output
-        continue-on-error: true
-
       - name: Run generator
         run: |
           python src/generate.py
-
-      # ✅ Upload output + state for next run (this is the “memory”)
-      - name: Upload output + state
-        uses: actions/upload-artifact@v4
-        with:
-          name: human-code-state
-          path: output
