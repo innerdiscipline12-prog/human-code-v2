@@ -49,11 +49,9 @@ def smart_wrap(line: str) -> str:
 # NOTE: For true 365-day no-repeat, make sure len(content_bank) >= 365
 # You can paste your big bank here anytime.
 
-content_bank = [
-    {
-        import random
+# ========= CONTENT BANK (AUTO 365) =========
 
-# ========= DARK ELITE POOLS =========
+import random
 
 title_part1 = [
 "DARK TRUTHS",
@@ -89,7 +87,6 @@ line_pool = [
 "Comfort kills ambition.",
 "People test limits quietly.",
 "Status changes treatment.",
-"People believe actions, not words.",
 "Absence increases value.",
 "Familiarity reduces respect.",
 "People protect self-interest first.",
@@ -100,52 +97,47 @@ line_pool = [
 "People admire restraint.",
 "Emotional control signals strength.",
 "Over-explaining reduces credibility.",
-"Not everyone deserves access.",
 "Privacy increases mystery.",
-"Validation seeking weakens presence.",
 "Scarcity creates attraction.",
-"People notice discipline.",
 "Respect follows standards.",
 "Energy speaks before words.",
-"People test your limits silently.",
-"Calmness intimidates chaos.",
-"Control earns admiration.",
-"Detachment shows power.",
-"People value what’s rare.",
 "Reaction reveals insecurity.",
 "Stillness shows confidence.",
 "Presence beats noise.",
 "Power is often quiet.",
 "Observation beats talking.",
-"People read behavior.",
 "Predictability lowers intrigue.",
-"Self-control earns respect.",
 "Patience shows authority.",
 "Silence filters people.",
-"Not everyone clapping supports you.",
-"Some loyalty is temporary.",
 "People respect firmness.",
 "Boundaries attract respect.",
 "Too available lowers value.",
-"People study your reactions.",
+"People study reactions.",
 "Discipline separates you.",
 "People trust consistency.",
-"Calm minds look powerful.",
 "Composure earns status."
 ]
 
 cta_pool = [
 "If you don’t follow now, you’ll probably never see us again.",
-"Follow now or miss future truths.",
 "Follow for deeper human truths.",
 "Follow for dark psychology insights.",
-"Follow if you value awareness.",
 "Follow for real human behavior.",
-"Follow for quiet psychological truths.",
-"Follow for deeper perception.",
-"Follow for mental sharpness.",
-"Follow for human nature truths."
+"Follow for quiet psychological truths."
 ]
+
+content_bank = []
+
+for _ in range(365):
+    title = f"7 {random.choice(title_part1)}\n{random.choice(title_part2)}"
+
+    lines = random.sample(line_pool, 7)
+    lines.append(random.choice(cta_pool))
+
+    content_bank.append({
+        "title": title,
+        "lines": lines
+    })
 
 # ========= BUILD 365 POSTS =========
 
