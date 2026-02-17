@@ -51,44 +51,122 @@ def smart_wrap(line: str) -> str:
 
 content_bank = [
     {
-        "title": "7 DARK TRUTHS\nABOUT HUMAN NATURE",
-        "lines": [
-            "People respect what they fear losing.",
-            "Attention is the real currency.",
-            "Silence reveals more than words.",
-            "Most loyalty is conditional.",
-            "Comfort kills ambition.",
-            "People test limits quietly.",
-            "Status changes treatment.",
-            "If you don’t follow now, you’ll probably never see us again."
-        ]
-    },
-    {
-        "title": "7 SIGNS YOU’RE\nEASY TO REPLACE",
-        "lines": [
-            "You always agree.",
-            "You fear being disliked.",
-            "You over-explain yourself.",
-            "You tolerate disrespect.",
-            "You chase validation.",
-            "You avoid conflict.",
-            "You accept bare minimum.",
-            "If you don’t follow now, you’ll probably never see us again."
-        ]
-    },
-    {
-        "title": "7 REALITIES\nABOUT RESPECT",
-        "lines": [
-            "Respect is felt, not requested.",
-            "People respect calm control.",
-            "Consistency builds authority.",
-            "Boundaries earn respect.",
-            "Silence holds power.",
-            "Energy speaks first.",
-            "Presence commands attention.",
-            "If you don’t follow now, you’ll probably never see us again."
-        ]
-    }
+        import random
+
+# ========= DARK ELITE POOLS =========
+
+title_part1 = [
+"DARK TRUTHS",
+"BRUTAL REALITIES",
+"HARSH TRUTHS",
+"UNCOMFORTABLE TRUTHS",
+"PSYCHOLOGICAL TRUTHS",
+"REALITIES",
+"TRUTHS",
+"SIGNS"
+]
+
+title_part2 = [
+"ABOUT HUMAN NATURE",
+"ABOUT PEOPLE",
+"ABOUT RESPECT",
+"ABOUT POWER",
+"ABOUT STATUS",
+"ABOUT SOCIAL LIFE",
+"ABOUT HUMAN BEHAVIOR",
+"ABOUT ATTENTION",
+"ABOUT CONTROL",
+"ABOUT SILENCE",
+"ABOUT EGO",
+"ABOUT DISCIPLINE"
+]
+
+line_pool = [
+"People respect what they fear losing.",
+"Attention is the real currency.",
+"Silence reveals more than words.",
+"Most loyalty is conditional.",
+"Comfort kills ambition.",
+"People test limits quietly.",
+"Status changes treatment.",
+"People believe actions, not words.",
+"Absence increases value.",
+"Familiarity reduces respect.",
+"People protect self-interest first.",
+"Calm people look powerful.",
+"Desperation lowers value.",
+"Boundaries reveal self-worth.",
+"Consistency builds authority.",
+"People admire restraint.",
+"Emotional control signals strength.",
+"Over-explaining reduces credibility.",
+"Not everyone deserves access.",
+"Privacy increases mystery.",
+"Validation seeking weakens presence.",
+"Scarcity creates attraction.",
+"People notice discipline.",
+"Respect follows standards.",
+"Energy speaks before words.",
+"People test your limits silently.",
+"Calmness intimidates chaos.",
+"Control earns admiration.",
+"Detachment shows power.",
+"People value what’s rare.",
+"Reaction reveals insecurity.",
+"Stillness shows confidence.",
+"Presence beats noise.",
+"Power is often quiet.",
+"Observation beats talking.",
+"People read behavior.",
+"Predictability lowers intrigue.",
+"Self-control earns respect.",
+"Patience shows authority.",
+"Silence filters people.",
+"Not everyone clapping supports you.",
+"Some loyalty is temporary.",
+"People respect firmness.",
+"Boundaries attract respect.",
+"Too available lowers value.",
+"People study your reactions.",
+"Discipline separates you.",
+"People trust consistency.",
+"Calm minds look powerful.",
+"Composure earns status."
+]
+
+cta_pool = [
+"If you don’t follow now, you’ll probably never see us again.",
+"Follow now or miss future truths.",
+"Follow for deeper human truths.",
+"Follow for dark psychology insights.",
+"Follow if you value awareness.",
+"Follow for real human behavior.",
+"Follow for quiet psychological truths.",
+"Follow for deeper perception.",
+"Follow for mental sharpness.",
+"Follow for human nature truths."
+]
+
+# ========= BUILD 365 POSTS =========
+
+random.seed(42)  # stable rotation
+
+content_bank = []
+
+for _ in range(365):
+    t1 = random.choice(title_part1)
+    t2 = random.choice(title_part2)
+
+    title = f"7 {t1}\n{t2}"
+
+    lines = random.sample(line_pool, 7)
+    lines.append(random.choice(cta_pool))
+
+    content_bank.append({
+        "title": title,
+        "lines": lines
+    })
+
 ]
 
 # ========= YEAR ENGINE (NO REPEAT) =========
