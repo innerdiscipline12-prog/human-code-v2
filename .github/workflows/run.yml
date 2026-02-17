@@ -2,22 +2,41 @@ name: Generate Content
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *"  # daily 06:00 UTC (adjust if you want)
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
 
-      - run: python src/generate.py
-
-      - uses: actions/upload-artifact@v4
+      # ✅ Download the previous memory/state so it doesn't reset
+      - name: Download state (if exists)
+        uses: actions/download-artifact@v4
         with:
-          name: human-code-content
-          path: output/
+          name: human-code-state
+          path: output
+        continue-on-error: true
+
+      - name: Run generator
+        run: |
+          python src/generate.py
+
+      # ✅ Upload output + state for next run (this is the “memory”)
+      - name: Upload output + state
+        uses: actions/upload-artifact@v4
+        with:
+          name: human-code-state
+          path: output
