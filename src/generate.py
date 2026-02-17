@@ -9,12 +9,12 @@ from datetime import datetime, timezone
 
 WIDTH = 1080
 HEIGHT = 1350
-BG_COLOR = (0, 0, 0)
+BG_COLOR = (0,0,0)
 
-TITLE_COLOR = (255, 190, 0)
-TEXT_COLOR = (240, 240, 240)
-CTA_COLOR = (255, 190, 0)
-WATERMARK_COLOR = (90, 90, 90)
+TITLE_COLOR = (255,190,0)
+TEXT_COLOR = (240,240,240)
+CTA_COLOR = (255,190,0)
+WATERMARK_COLOR = (90,90,90)
 
 FONT_PATH = "src/Montserrat-Bold.ttf"
 
@@ -24,275 +24,150 @@ CTA_SIZE = 38
 WATERMARK_SIZE = 24
 
 OUTPUT_FOLDER = "output"
-
-# IMPORTANT:
-# GitHub Actions runners are fresh each run.
-# We persist this state file via workflow artifacts.
-STATE_FILE = os.path.join(OUTPUT_FOLDER, "state.json")
+STATE_FILE = "state.json"
 
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# ========= SMART WRAP =========
+# ========= WRAP =========
 
-def smart_wrap(line: str) -> str:
-    line = line.strip()
-
+def smart_wrap(line):
     if len(line) <= 55:
         return line
-    if 56 <= len(line) <= 95:
-        return textwrap.fill(line, width=42)
-    if len(line) > 95:
-        return textwrap.fill(line, width=36)
-    return line
+    if len(line) <= 95:
+        return textwrap.fill(line,width=42)
+    return textwrap.fill(line,width=36)
 
-# ========= CONTENT BANK =========
-# NOTE: For true 365-day no-repeat, make sure len(content_bank) >= 365
-# You can paste your big bank here anytime.
-
-# ========= CONTENT BANK (AUTO 365) =========
-
-import random
+# ========= TITLE POOLS =========
 
 title_part1 = [
 "DARK TRUTHS",
-"BRUTAL REALITIES",
-"HARSH TRUTHS",
-"UNCOMFORTABLE TRUTHS",
+"HARSH REALITIES",
+"BRUTAL TRUTHS",
 "PSYCHOLOGICAL TRUTHS",
-"REALITIES",
-"TRUTHS",
-"SIGNS"
+"UNCOMFORTABLE TRUTHS",
+"SOCIAL TRUTHS"
 ]
 
 title_part2 = [
-"ABOUT HUMAN NATURE",
 "ABOUT PEOPLE",
-"ABOUT RESPECT",
 "ABOUT POWER",
+"ABOUT RESPECT",
+"ABOUT HUMAN NATURE",
 "ABOUT STATUS",
-"ABOUT SOCIAL LIFE",
-"ABOUT HUMAN BEHAVIOR",
-"ABOUT ATTENTION",
-"ABOUT CONTROL",
-"ABOUT SILENCE",
 "ABOUT EGO",
-"ABOUT DISCIPLINE"
+"ABOUT CONTROL"
 ]
+
+# ========= LINE POOL =========
 
 line_pool = [
 "People respect what they fear losing.",
-"Attention is the real currency.",
-"Silence reveals more than words.",
-"Most loyalty is conditional.",
-"Comfort kills ambition.",
-"People test limits quietly.",
+"Silence exposes truth.",
+"Comfort weakens discipline.",
+"Attention equals value.",
 "Status changes treatment.",
-"Absence increases value.",
-"Familiarity reduces respect.",
-"People protect self-interest first.",
-"Calm people look powerful.",
-"Desperation lowers value.",
-"Boundaries reveal self-worth.",
 "Consistency builds authority.",
-"People admire restraint.",
-"Emotional control signals strength.",
-"Over-explaining reduces credibility.",
-"Privacy increases mystery.",
-"Scarcity creates attraction.",
-"Respect follows standards.",
-"Energy speaks before words.",
-"Reaction reveals insecurity.",
-"Stillness shows confidence.",
-"Presence beats noise.",
-"Power is often quiet.",
-"Observation beats talking.",
-"Predictability lowers intrigue.",
-"Patience shows authority.",
-"Silence filters people.",
-"People respect firmness.",
-"Boundaries attract respect.",
-"Too available lowers value.",
-"People study reactions.",
-"Discipline separates you.",
-"People trust consistency.",
-"Composure earns status."
+"Boundaries earn respect.",
+"Presence speaks loudly.",
+"Control attracts respect.",
+"People test limits quietly.",
+"Energy reveals confidence.",
+"Calm signals power.",
+"Results silence doubt.",
+"Most loyalty is conditional.",
+"People value scarcity.",
+"Focus creates advantage.",
+"Detachment reveals worth.",
+"Discipline shapes identity.",
+"Restraint shows strength.",
+"Patience builds leverage."
 ]
 
 cta_pool = [
 "If you don’t follow now, you’ll probably never see us again.",
-"Follow for deeper human truths.",
-"Follow for dark psychology insights.",
-"Follow for real human behavior.",
-"Follow for quiet psychological truths."
+"Follow for deeper truths.",
+"Follow for dark psychology.",
+"Follow for real human behavior."
 ]
 
-content_bank = []
-
-for _ in range(365):
-    title = f"7 {random.choice(title_part1)}\n{random.choice(title_part2)}"
-
-    lines = random.sample(line_pool, 7)
-    lines.append(random.choice(cta_pool))
-
-    content_bank.append({
-        "title": title,
-        "lines": lines
-    })
-
-# ========= BUILD 365 POSTS =========
-
-random.seed(42)  # stable rotation
+# ========= BUILD 365 BANK =========
 
 content_bank = []
 
 for _ in range(365):
     t1 = random.choice(title_part1)
     t2 = random.choice(title_part2)
-
     title = f"7 {t1}\n{t2}"
 
-    lines = random.sample(line_pool, 7)
+    lines = random.sample(line_pool,7)
     lines.append(random.choice(cta_pool))
 
     content_bank.append({
-        "title": title,
-        "lines": lines
+        "title":title,
+        "lines":lines
     })
 
-]
-
-# ========= YEAR ENGINE (NO REPEAT) =========
-
-def today_str_utc() -> str:
-    # Stable date regardless of runner timezone issues
-    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+# ========= STATE ENGINE =========
 
 def load_state():
     if os.path.exists(STATE_FILE):
-        try:
-            with open(STATE_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            pass
-    return {}
+        with open(STATE_FILE,"r") as f:
+            return json.load(f)
+    return {"index":0}
 
-def save_state(state: dict):
-    os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
-    with open(STATE_FILE, "w", encoding="utf-8") as f:
-        json.dump(state, f, ensure_ascii=False, indent=2)
+def save_state(s):
+    with open(STATE_FILE,"w") as f:
+        json.dump(s,f)
 
-def build_year_order(n: int, year: int, seed_salt: str = "THE_HUMAN_CODE_V9"):
-    # Deterministic yearly shuffle: same year -> same order
-    rng = random.Random(f"{seed_salt}:{year}:{n}")
-    order = list(range(n))
-    rng.shuffle(order)
-    return order
+state = load_state()
+idx = state["index"] % len(content_bank)
 
-def pick_next_post_id(n: int):
-    state = load_state()
-    year = int(datetime.now(timezone.utc).strftime("%Y"))
+data = content_bank[idx]
 
-    # Reset if new year OR content length changed
-    if (
-        state.get("year") != year
-        or state.get("n") != n
-        or "order" not in state
-        or "idx" not in state
-    ):
-        state["year"] = year
-        state["n"] = n
-        state["order"] = build_year_order(n, year)
-        state["idx"] = 0
+state["index"] += 1
+save_state(state)
 
-    # Safety if idx out of bounds
-    if state["idx"] >= len(state["order"]):
-        state["idx"] = 0
+# ========= DRAW =========
 
-    post_id = state["order"][state["idx"]]
-    state["idx"] += 1
-    save_state(state)
-
-    return post_id, state
-
-# ========= PICK TODAY =========
-
-POST_ID, STATE = pick_next_post_id(len(content_bank))
-data = content_bank[POST_ID]
-
-title = data["title"]
-lines = data["lines"]
-
-# ========= CREATE OUTPUT FOLDER FOR TODAY =========
-
-DATE_TAG = today_str_utc()
-DAY_DIR = os.path.join(OUTPUT_FOLDER, DATE_TAG)
-os.makedirs(DAY_DIR, exist_ok=True)
-
-# ========= CREATE IMAGE =========
-
-img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
+img = Image.new("RGB",(WIDTH,HEIGHT),BG_COLOR)
 draw = ImageDraw.Draw(img)
 
-title_font = ImageFont.truetype(FONT_PATH, TITLE_SIZE)
-text_font = ImageFont.truetype(FONT_PATH, TEXT_SIZE)
-cta_font = ImageFont.truetype(FONT_PATH, CTA_SIZE)
-watermark_font = ImageFont.truetype(FONT_PATH, WATERMARK_SIZE)
-
-# ========= DRAW TITLE =========
+title_font = ImageFont.truetype(FONT_PATH,TITLE_SIZE)
+text_font = ImageFont.truetype(FONT_PATH,TEXT_SIZE)
+cta_font = ImageFont.truetype(FONT_PATH,CTA_SIZE)
+watermark_font = ImageFont.truetype(FONT_PATH,WATERMARK_SIZE)
 
 y = 120
-for tline in title.split("\n"):
-    w = draw.textlength(tline, font=title_font)
-    draw.text(((WIDTH - w) / 2, y), tline, font=title_font, fill=TITLE_COLOR)
+
+for line in data["title"].split("\n"):
+    w = draw.textlength(line,font=title_font)
+    draw.text(((WIDTH-w)/2,y),line,font=title_font,fill=TITLE_COLOR)
     y += 70
+
 y += 40
 
-# ========= DRAW LIST =========
-
-number = 1
-for line in lines:
+num=1
+for line in data["lines"]:
     wrapped = smart_wrap(line)
 
-    font = text_font
-    color = TEXT_COLOR
-    if number == len(lines):
-        font = cta_font
-        color = CTA_COLOR
+    font = cta_font if num==8 else text_font
+    color = CTA_COLOR if num==8 else TEXT_COLOR
 
-    wrapped_lines = wrapped.split("\n")
+    for wl in wrapped.split("\n"):
+        text = f"{num}. {wl}" if wl==wrapped.split("\n")[0] else wl
+        w = draw.textlength(text,font=font)
+        draw.text(((WIDTH-w)/2,y),text,font=font,fill=color)
+        y+=50
 
-    for wline in wrapped_lines:
-        text = f"{number}. {wline}" if wline == wrapped_lines[0] else wline
-        w = draw.textlength(text, font=font)
-        draw.text(((WIDTH - w) / 2, y), text, font=font, fill=color)
-        y += 50
+    y+=25
+    num+=1
 
-    y += 25
-    number += 1
+# watermark
+wm="THE HUMAN CODE"
+w=draw.textlength(wm,font=watermark_font)
+draw.text(((WIDTH-w)/2,HEIGHT-60),wm,font=watermark_font,fill=WATERMARK_COLOR)
 
-# ========= WATERMARK =========
-
-watermark = "THE HUMAN CODE"
-w = draw.textlength(watermark, font=watermark_font)
-draw.text(((WIDTH - w) / 2, HEIGHT - 60), watermark, font=watermark_font, fill=WATERMARK_COLOR)
-
-# ========= SAVE IMAGE + CAPTION =========
-
-img_path = os.path.join(DAY_DIR, f"post_{DATE_TAG}_id{POST_ID}.png")
-img.save(img_path)
-
-caption = title.replace("\n", " ") + "\n\n"
-for i, l in enumerate(lines, 1):
-    caption += f"{i}. {l}\n"
-
-caption_path = os.path.join(DAY_DIR, f"caption_{DATE_TAG}_id{POST_ID}.txt")
-with open(caption_path, "w", encoding="utf-8") as f:
-    f.write(caption)
+# save
+img.save(f"{OUTPUT_FOLDER}/post.png")
 
 print("DONE")
-print("DATE:", DATE_TAG)
-print("POST_ID:", POST_ID)
-print("STATE:", {"year": STATE.get("year"), "idx": STATE.get("idx"), "n": STATE.get("n")})
-print("Image:", img_path)
-print("Caption:", caption_path)
-print("State file:", STATE_FILE)
