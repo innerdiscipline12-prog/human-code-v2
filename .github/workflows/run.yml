@@ -25,3 +25,9 @@ jobs:
       - name: Run generator
         run: |
           python src/generate.py
+
+      - name: Upload generated image
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-post
+          path: output/post.png
