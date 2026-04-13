@@ -162,19 +162,16 @@ save_state(state)
 
 # ========= MEASURE TOTAL HEIGHT =========
 
-def measure_content_height(draw, data, title_font, text_font, cta_font):
+def measure_content_height(data):
     total = 0
 
-    # Title lines
-    for line in data["title"].split("\n"):
-        total += 70
+    # Title lines (2 lines always)
+    total += 2 * 70
     total += 40  # gap after title
 
-    # Body lines
+    # Body lines (7 numbered + 1 CTA)
     for i, line in enumerate(data["lines"]):
-        num = i + 1
         wrapped = smart_wrap(line)
-        font = cta_font if num == 8 else text_font
         sub_lines = wrapped.split("\n")
         total += len(sub_lines) * 50
         total += 25  # gap between items
@@ -191,10 +188,11 @@ text_font = ImageFont.truetype(FONT_PATH, TEXT_SIZE)
 cta_font = ImageFont.truetype(FONT_PATH, CTA_SIZE)
 watermark_font = ImageFont.truetype(FONT_PATH, WATERMARK_SIZE)
 
-# Calculate vertical centering (leave 80px at bottom for watermark)
-content_height = measure_content_height(draw, data, title_font, text_font, cta_font)
-usable_height = HEIGHT - 80
-y = max(80, (usable_height - content_height) // 2)
+# Calculate vertical centering
+WATERMARK_ZONE = 80
+content_height = measure_content_height(data)
+usable_height = HEIGHT - WATERMARK_ZONE
+y = max(60, (usable_height - content_height) // 2)
 
 # Draw title
 for line in data["title"].split("\n"):
@@ -206,16 +204,17 @@ y += 40
 
 # Draw lines
 num = 1
+is_cta = False
 for line in data["lines"]:
+    is_cta = (num == 8)
     wrapped = smart_wrap(line)
-    font = cta_font if num == 8 else text_font
-    color = CTA_COLOR if num == 8 else TEXT_COLOR
+    font = cta_font if is_cta else text_font
+    color = CTA_COLOR if is_cta else TEXT_COLOR
 
     sub_lines = wrapped.split("\n")
     for i, wl in enumerate(sub_lines):
-        if num == 8:
-            # CTA: no number, just centered text
-            text = wl
+        if is_cta:
+            text = wl  # No number for CTA
         else:
             text = f"{num}. {wl}" if i == 0 else f"    {wl}"
 
@@ -233,116 +232,4 @@ draw.text(((WIDTH - w) / 2, HEIGHT - 60), wm, font=watermark_font, fill=WATERMAR
 
 # Save
 img.save(f"{OUTPUT_FOLDER}/post.png")
-print("DONE")
-
-line_pool = [
-"People respect what they fear losing.",
-"Silence exposes truth.",
-"Comfort weakens discipline.",
-"Attention equals value.",
-"Status changes treatment.",
-"Consistency builds authority.",
-"Boundaries earn respect.",
-"Presence speaks loudly.",
-"Control attracts respect.",
-"People test limits quietly.",
-"Energy reveals confidence.",
-"Calm signals power.",
-"Results silence doubt.",
-"Most loyalty is conditional.",
-"People value scarcity.",
-"Focus creates advantage.",
-"Detachment reveals worth.",
-"Discipline shapes identity.",
-"Restraint shows strength.",
-"Patience builds leverage."
-]
-
-cta_pool = [
-"If you don’t follow now, you’ll probably never see us again.",
-"Follow for deeper truths.",
-"Follow for dark psychology.",
-"Follow for real human behavior."
-]
-
-# ========= BUILD 365 BANK =========
-
-content_bank = []
-
-for _ in range(365):
-    t1 = random.choice(title_part1)
-    t2 = random.choice(title_part2)
-    title = f"7 {t1}\n{t2}"
-
-    lines = random.sample(line_pool,7)
-    lines.append(random.choice(cta_pool))
-
-    content_bank.append({
-        "title":title,
-        "lines":lines
-    })
-
-# ========= STATE ENGINE =========
-
-def load_state():
-    if os.path.exists(STATE_FILE):
-        with open(STATE_FILE,"r") as f:
-            return json.load(f)
-    return {"index":0}
-
-def save_state(s):
-    with open(STATE_FILE,"w") as f:
-        json.dump(s,f)
-
-state = load_state()
-idx = state["index"] % len(content_bank)
-
-data = content_bank[idx]
-
-state["index"] += 1
-save_state(state)
-
-# ========= DRAW =========
-
-img = Image.new("RGB",(WIDTH,HEIGHT),BG_COLOR)
-draw = ImageDraw.Draw(img)
-
-title_font = ImageFont.truetype(FONT_PATH,TITLE_SIZE)
-text_font = ImageFont.truetype(FONT_PATH,TEXT_SIZE)
-cta_font = ImageFont.truetype(FONT_PATH,CTA_SIZE)
-watermark_font = ImageFont.truetype(FONT_PATH,WATERMARK_SIZE)
-
-y = 120
-
-for line in data["title"].split("\n"):
-    w = draw.textlength(line,font=title_font)
-    draw.text(((WIDTH-w)/2,y),line,font=title_font,fill=TITLE_COLOR)
-    y += 70
-
-y += 40
-
-num=1
-for line in data["lines"]:
-    wrapped = smart_wrap(line)
-
-    font = cta_font if num==8 else text_font
-    color = CTA_COLOR if num==8 else TEXT_COLOR
-
-    for wl in wrapped.split("\n"):
-        text = f"{num}. {wl}" if wl==wrapped.split("\n")[0] else wl
-        w = draw.textlength(text,font=font)
-        draw.text(((WIDTH-w)/2,y),text,font=font,fill=color)
-        y+=50
-
-    y+=25
-    num+=1
-
-# watermark
-wm="THE HUMAN CODE"
-w=draw.textlength(wm,font=watermark_font)
-draw.text(((WIDTH-w)/2,HEIGHT-60),wm,font=watermark_font,fill=WATERMARK_COLOR)
-
-# save
-img.save(f"{OUTPUT_FOLDER}/post.png")
-
 print("DONE")
