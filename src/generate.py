@@ -3,7 +3,6 @@ import textwrap
 import os
 import json
 import random
-from datetime import datetime, timezone
 
 # ========= SETTINGS =========
 
@@ -15,6 +14,8 @@ TITLE_COLOR = (255, 190, 0)
 TEXT_COLOR = (240, 240, 240)
 CTA_COLOR = (255, 190, 0)
 WATERMARK_COLOR = (90, 90, 90)
+QUOTE_COLOR = (200, 200, 200)
+ACCENT_COLOR = (255, 190, 0)
 
 FONT_PATH = "src/Montserrat-Bold.ttf"
 
@@ -22,6 +23,9 @@ TITLE_SIZE = 64
 TEXT_SIZE = 36
 CTA_SIZE = 38
 WATERMARK_SIZE = 24
+QUOTE_SIZE = 44
+QUOTE_LABEL_SIZE = 26
+COVER_TITLE_SIZE = 80
 
 OUTPUT_FOLDER = "output"
 STATE_FILE = "state.json"
@@ -36,6 +40,9 @@ def smart_wrap(line):
     if len(line) <= 95:
         return textwrap.fill(line, width=42)
     return textwrap.fill(line, width=36)
+
+def wrap_quote(line, width=28):
+    return textwrap.fill(line, width=width)
 
 # ========= TITLE POOLS =========
 
@@ -112,6 +119,31 @@ line_pool = [
     "Perception shapes reality more than facts.",
 ]
 
+# ========= QUOTE OF THE DAY POOL =========
+
+quote_pool = [
+    ("The less you react, the more powerful you become.", "Unknown"),
+    ("Silence is the best response to a fool.", "Unknown"),
+    ("Discipline is choosing between what you want now and what you want most.", "Abraham Lincoln"),
+    ("The wolf does not concern himself with the opinion of sheep.", "Unknown"),
+    ("Do not argue with fools. They drag you to their level.", "Mark Twain"),
+    ("Some people aren't loyal to you. They are loyal to their need of you.", "Unknown"),
+    ("Work in silence. Let success make the noise.", "Unknown"),
+    ("Fear kills more dreams than failure ever will.", "Suzy Kassem"),
+    ("When you react, you give away your power.", "Unknown"),
+    ("Be careful who you trust. Salt and sugar look the same.", "Unknown"),
+    ("Not everyone deserves access to you.", "Unknown"),
+    ("You are the average of the five people you spend the most time with.", "Jim Rohn"),
+    ("Energy is everything. Protect yours.", "Unknown"),
+    ("The quieter you become, the more you can hear.", "Ram Dass"),
+    ("Master your mind or your mind will master you.", "Unknown"),
+    ("Stop explaining yourself. You don't owe anyone your story.", "Unknown"),
+    ("The man who does not read has no advantage over the man who cannot.", "Mark Twain"),
+    ("Your vibe attracts your tribe.", "Unknown"),
+    ("Obsessed is a word the lazy use to describe the dedicated.", "Unknown"),
+    ("Closed mouths don't get fed. Open ones don't stay hungry.", "Unknown"),
+]
+
 # ========= CTA POOL =========
 
 cta_pool = [
@@ -137,9 +169,13 @@ for _ in range(365):
     lines = random.sample(line_pool, 7)
     lines.append(random.choice(cta_pool))
 
+    quote, author = random.choice(quote_pool)
+
     content_bank.append({
         "title": title,
-        "lines": lines
+        "lines": lines,
+        "quote": quote,
+        "author": author,
     })
 
 # ========= STATE ENGINE =========
@@ -160,41 +196,103 @@ data = content_bank[idx]
 state["index"] += 1
 save_state(state)
 
-# ========= MEASURE TOTAL HEIGHT =========
+# ========= HELPERS =========
+
+def draw_watermark(draw, font, width, height):
+    wm = "THE HUMAN CODE"
+    w = draw.textlength(wm, font=font)
+    draw.text(((width - w) / 2, height - 60), wm, font=font, fill=WATERMARK_COLOR)
 
 def measure_content_height(data):
-    total = 0
-
-    # Title lines (2 lines always)
-    total += 2 * 70
-    total += 40  # gap after title
-
-    # Body lines (7 numbered + 1 CTA)
-    for i, line in enumerate(data["lines"]):
+    total = 2 * 70 + 40
+    for line in data["lines"]:
         wrapped = smart_wrap(line)
-        sub_lines = wrapped.split("\n")
-        total += len(sub_lines) * 50
-        total += 25  # gap between items
-
+        total += len(wrapped.split("\n")) * 50 + 25
     return total
 
-# ========= DRAW =========
+# ========= FONTS =========
+
+title_font     = ImageFont.truetype(FONT_PATH, TITLE_SIZE)
+text_font      = ImageFont.truetype(FONT_PATH, TEXT_SIZE)
+cta_font       = ImageFont.truetype(FONT_PATH, CTA_SIZE)
+watermark_font = ImageFont.truetype(FONT_PATH, WATERMARK_SIZE)
+quote_font     = ImageFont.truetype(FONT_PATH, QUOTE_SIZE)
+qlabel_font    = ImageFont.truetype(FONT_PATH, QUOTE_LABEL_SIZE)
+cover_font     = ImageFont.truetype(FONT_PATH, COVER_TITLE_SIZE)
+
+# =========================================
+# SLIDE 1 â€” COVER (Title + Quote of the Day)
+# =========================================
+
+cover = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
+cd = ImageDraw.Draw(cover)
+
+# Top accent line
+cd.rectangle([(80, 100), (WIDTH - 80, 106)], fill=ACCENT_COLOR)
+
+# Brand label
+brand = "THE HUMAN CODE"
+bw = cd.textlength(brand, font=qlabel_font)
+cd.text(((WIDTH - bw) / 2, 130), brand, font=qlabel_font, fill=WATERMARK_COLOR)
+
+# Cover title
+cy = 240
+for line in data["title"].split("\n"):
+    lw = cd.textlength(line, font=cover_font)
+    cd.text(((WIDTH - lw) / 2, cy), line, font=cover_font, fill=TITLE_COLOR)
+    cy += 105
+
+# Divider
+cy += 40
+cd.rectangle([(200, cy), (WIDTH - 200, cy + 4)], fill=ACCENT_COLOR)
+cy += 50
+
+# "QUOTE OF THE DAY" label
+label = "QUOTE OF THE DAY"
+lw = cd.textlength(label, font=qlabel_font)
+cd.text(((WIDTH - lw) / 2, cy), label, font=qlabel_font, fill=ACCENT_COLOR)
+cy += 60
+
+# Opening quote mark
+cd.text((80, cy - 10), "\u201C", font=quote_font, fill=ACCENT_COLOR)
+
+# Quote text
+wrapped_quote = wrap_quote(data["quote"], width=30)
+for qline in wrapped_quote.split("\n"):
+    qw = cd.textlength(qline, font=quote_font)
+    cd.text(((WIDTH - qw) / 2, cy), qline, font=quote_font, fill=QUOTE_COLOR)
+    cy += 60
+
+# Closing quote mark
+cd.text((WIDTH - 110, cy - 20), "\u201D", font=quote_font, fill=ACCENT_COLOR)
+cy += 35
+
+# Author
+author_text = f"â€” {data['author']}"
+aw = cd.textlength(author_text, font=qlabel_font)
+cd.text(((WIDTH - aw) / 2, cy), author_text, font=qlabel_font, fill=TEXT_COLOR)
+
+# Bottom accent line
+cd.rectangle([(80, HEIGHT - 100), (WIDTH - 80, HEIGHT - 94)], fill=ACCENT_COLOR)
+
+# Watermark
+draw_watermark(cd, watermark_font, WIDTH, HEIGHT)
+
+cover.save(f"{OUTPUT_FOLDER}/slide_1.png")
+print("SLIDE 1 (cover) saved.")
+
+# =========================================
+# SLIDE 2 â€” LIST POST
+# =========================================
 
 img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
 draw = ImageDraw.Draw(img)
 
-title_font = ImageFont.truetype(FONT_PATH, TITLE_SIZE)
-text_font = ImageFont.truetype(FONT_PATH, TEXT_SIZE)
-cta_font = ImageFont.truetype(FONT_PATH, CTA_SIZE)
-watermark_font = ImageFont.truetype(FONT_PATH, WATERMARK_SIZE)
-
-# Calculate vertical centering
-WATERMARK_ZONE = 80
 content_height = measure_content_height(data)
-usable_height = HEIGHT - WATERMARK_ZONE
+usable_height = HEIGHT - 80
 y = max(60, (usable_height - content_height) // 2)
 
-# Draw title
+# Title
 for line in data["title"].split("\n"):
     w = draw.textlength(line, font=title_font)
     draw.text(((WIDTH - w) / 2, y), line, font=title_font, fill=TITLE_COLOR)
@@ -202,9 +300,8 @@ for line in data["title"].split("\n"):
 
 y += 40
 
-# Draw lines
+# Lines
 num = 1
-is_cta = False
 for line in data["lines"]:
     is_cta = (num == 8)
     wrapped = smart_wrap(line)
@@ -214,10 +311,9 @@ for line in data["lines"]:
     sub_lines = wrapped.split("\n")
     for i, wl in enumerate(sub_lines):
         if is_cta:
-            text = wl  # No number for CTA
+            text = wl
         else:
             text = f"{num}. {wl}" if i == 0 else f"    {wl}"
-
         w = draw.textlength(text, font=font)
         draw.text(((WIDTH - w) / 2, y), text, font=font, fill=color)
         y += 50
@@ -226,10 +322,8 @@ for line in data["lines"]:
     num += 1
 
 # Watermark
-wm = "THE HUMAN CODE"
-w = draw.textlength(wm, font=watermark_font)
-draw.text(((WIDTH - w) / 2, HEIGHT - 60), wm, font=watermark_font, fill=WATERMARK_COLOR)
+draw_watermark(draw, watermark_font, WIDTH, HEIGHT)
 
-# Save
-img.save(f"{OUTPUT_FOLDER}/post.png")
+img.save(f"{OUTPUT_FOLDER}/slide_2.png")
+print("SLIDE 2 (post) saved.")
 print("DONE")
