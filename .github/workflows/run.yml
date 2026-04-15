@@ -26,8 +26,10 @@ jobs:
         run: |
           python src/generate.py
 
-      - name: Upload generated image
+      - name: Upload slides
         uses: actions/upload-artifact@v4
         with:
-          name: generated-post
-          path: output/post.png
+          name: daily-slides
+          path: |
+            output/slide_1.png
+            output/slide_2.png
