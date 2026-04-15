@@ -289,7 +289,7 @@ cd.text((WIDTH - 110, cy - 20), "\u201D", font=quote_font, fill=ACCENT_COLOR)
 cy += 20
 
 # Author â€” use Unicode em dash to avoid encoding bug
-author_text = f"\u2014 {data['author']}"
+author_text = "\u2014 @humancode.psychology"
 aw = cd.textlength(author_text, font=qlabel_font)
 cd.text(((WIDTH - aw) / 2, cy), author_text, font=qlabel_font, fill=TEXT_COLOR)
 
