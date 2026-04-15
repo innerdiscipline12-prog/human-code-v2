@@ -25,7 +25,7 @@ CTA_SIZE = 38
 WATERMARK_SIZE = 24
 QUOTE_SIZE = 44
 QUOTE_LABEL_SIZE = 26
-COVER_TITLE_SIZE = 80
+COVER_TITLE_SIZE = 62  # reduced to prevent overflow
 
 OUTPUT_FOLDER = "output"
 STATE_FILE = "state.json"
@@ -41,7 +41,7 @@ def smart_wrap(line):
         return textwrap.fill(line, width=42)
     return textwrap.fill(line, width=36)
 
-def wrap_quote(line, width=28):
+def wrap_quote(line, width=30):
     return textwrap.fill(line, width=width)
 
 # ========= TITLE POOLS =========
@@ -124,7 +124,7 @@ line_pool = [
 quote_pool = [
     ("The less you react, the more powerful you become.", "Unknown"),
     ("Silence is the best response to a fool.", "Unknown"),
-    ("Discipline is choosing between what you want now and what you want most.", "Abraham Lincoln"),
+    ("Discipline is choosing what you want most over what you want now.", "Abraham Lincoln"),
     ("The wolf does not concern himself with the opinion of sheep.", "Unknown"),
     ("Do not argue with fools. They drag you to their level.", "Mark Twain"),
     ("Some people aren't loyal to you. They are loyal to their need of you.", "Unknown"),
@@ -139,9 +139,9 @@ quote_pool = [
     ("Master your mind or your mind will master you.", "Unknown"),
     ("Stop explaining yourself. You don't owe anyone your story.", "Unknown"),
     ("The man who does not read has no advantage over the man who cannot.", "Mark Twain"),
-    ("Your vibe attracts your tribe.", "Unknown"),
     ("Obsessed is a word the lazy use to describe the dedicated.", "Unknown"),
     ("Closed mouths don't get fed. Open ones don't stay hungry.", "Unknown"),
+    ("Your vibe attracts your tribe.", "Unknown"),
 ]
 
 # ========= CTA POOL =========
@@ -227,48 +227,69 @@ cover_font     = ImageFont.truetype(FONT_PATH, COVER_TITLE_SIZE)
 cover = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
 cd = ImageDraw.Draw(cover)
 
-# Top accent line
-cd.rectangle([(80, 100), (WIDTH - 80, 106)], fill=ACCENT_COLOR)
+# --- Pre-calculate total cover content height for vertical centering ---
+quote_lines      = wrap_quote(data["quote"], width=30).split("\n")
+title_lines      = data["title"].split("\n")
+title_block_h    = len(title_lines) * 90        # each title line + spacing
+gap_after_title  = 50
+divider_h        = 4 + 50                        # divider rect + gap
+label_h          = 60                            # QUOTE OF THE DAY label
+quote_block_h    = len(quote_lines) * 60         # quote lines
+author_h         = 35 + 30                       # author + gap
+total_cover_h    = title_block_h + gap_after_title + divider_h + label_h + quote_block_h + author_h
 
-# Brand label
+WATERMARK_ZONE   = 120
+usable           = HEIGHT - WATERMARK_ZONE
+cy               = max(120, (usable - total_cover_h) // 2)
+
+# Top accent line
+cd.rectangle([(80, 60), (WIDTH - 80, 66)], fill=ACCENT_COLOR)
+
+# Brand label (always just below top accent)
 brand = "THE HUMAN CODE"
 bw = cd.textlength(brand, font=qlabel_font)
-cd.text(((WIDTH - bw) / 2, 130), brand, font=qlabel_font, fill=WATERMARK_COLOR)
+cd.text(((WIDTH - bw) / 2, 82), brand, font=qlabel_font, fill=WATERMARK_COLOR)
 
-# Cover title
-cy = 240
-for line in data["title"].split("\n"):
-    lw = cd.textlength(line, font=cover_font)
-    cd.text(((WIDTH - lw) / 2, cy), line, font=cover_font, fill=TITLE_COLOR)
-    cy += 105
+# Cover title â€” auto-wrap each part to fit within WIDTH - 80px margin
+MARGIN = 80
+for line in title_lines:
+    # Shrink font dynamically if line is too wide
+    font_size = COVER_TITLE_SIZE
+    f = cover_font
+    while cd.textlength(line, font=f) > (WIDTH - MARGIN * 2) and font_size > 40:
+        font_size -= 2
+        f = ImageFont.truetype(FONT_PATH, font_size)
+    lw = cd.textlength(line, font=f)
+    cd.text(((WIDTH - lw) / 2, cy), line, font=f, fill=TITLE_COLOR)
+    cy += 90
+
+cy += gap_after_title
 
 # Divider
-cy += 40
-cd.rectangle([(200, cy), (WIDTH - 200, cy + 4)], fill=ACCENT_COLOR)
-cy += 50
+cd.rectangle([(160, cy), (WIDTH - 160, cy + 4)], fill=ACCENT_COLOR)
+cy += 30
 
 # "QUOTE OF THE DAY" label
 label = "QUOTE OF THE DAY"
 lw = cd.textlength(label, font=qlabel_font)
 cd.text(((WIDTH - lw) / 2, cy), label, font=qlabel_font, fill=ACCENT_COLOR)
-cy += 60
+cy += label_h
 
 # Opening quote mark
 cd.text((80, cy - 10), "\u201C", font=quote_font, fill=ACCENT_COLOR)
 
-# Quote text
-wrapped_quote = wrap_quote(data["quote"], width=30)
-for qline in wrapped_quote.split("\n"):
+# Quote lines
+for qline in quote_lines:
     qw = cd.textlength(qline, font=quote_font)
     cd.text(((WIDTH - qw) / 2, cy), qline, font=quote_font, fill=QUOTE_COLOR)
     cy += 60
 
 # Closing quote mark
 cd.text((WIDTH - 110, cy - 20), "\u201D", font=quote_font, fill=ACCENT_COLOR)
-cy += 35
+cy += 20
 
-# Author
-author_text = f"â€” {data['author']}"
+# Author â€” use Unicode em dash to avoid encoding bug
+author_text = f"\u2014 {data['author']}"
 aw = cd.textlength(author_text, font=qlabel_font)
 cd.text(((WIDTH - aw) / 2, cy), author_text, font=qlabel_font, fill=TEXT_COLOR)
 
