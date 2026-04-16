@@ -25,7 +25,7 @@ CTA_SIZE = 38
 WATERMARK_SIZE = 24
 QUOTE_SIZE = 44
 QUOTE_LABEL_SIZE = 26
-COVER_TITLE_SIZE = 62  # reduced to prevent overflow
+COVER_TITLE_SIZE = 62
 
 OUTPUT_FOLDER = "output"
 STATE_FILE = "state.json"
@@ -159,18 +159,37 @@ cta_pool = [
 
 # ========= BUILD 365 BANK =========
 
+# All unique title combos shuffled — 120 unique combinations
+all_combos = [(t1, t2) for t1 in title_part1 for t2 in title_part2]
+random.shuffle(all_combos)
+
+# Non-repeating quote and CTA cycles
+quote_cycle = quote_pool * (365 // len(quote_pool) + 1)
+random.shuffle(quote_cycle)
+
+cta_cycle = cta_pool * (365 // len(cta_pool) + 1)
+random.shuffle(cta_cycle)
+
+# Non-repeating 7-line blocks from line pool
+line_blocks = []
+shuffled_lines = line_pool[:]
+random.shuffle(shuffled_lines)
+for i in range(365):
+    if len(shuffled_lines) < 7:
+        shuffled_lines = line_pool[:]
+        random.shuffle(shuffled_lines)
+    block = shuffled_lines[:7]
+    shuffled_lines = shuffled_lines[7:]
+    line_blocks.append(block)
+
 content_bank = []
 
-for _ in range(365):
-    t1 = random.choice(title_part1)
-    t2 = random.choice(title_part2)
+for i in range(365):
+    t1, t2 = all_combos[i % len(all_combos)]
     title = f"7 {t1}\n{t2}"
-
-    lines = random.sample(line_pool, 7)
-    lines.append(random.choice(cta_pool))
-
-    quote, author = random.choice(quote_pool)
-
+    lines = line_blocks[i][:]
+    lines.append(cta_cycle[i])
+    quote, author = quote_cycle[i]
     content_bank.append({
         "title": title,
         "lines": lines,
@@ -221,39 +240,37 @@ qlabel_font    = ImageFont.truetype(FONT_PATH, QUOTE_LABEL_SIZE)
 cover_font     = ImageFont.truetype(FONT_PATH, COVER_TITLE_SIZE)
 
 # =========================================
-# SLIDE 1 â€” COVER (Title + Quote of the Day)
+# SLIDE 1 — COVER (Title + Quote of the Day)
 # =========================================
 
 cover = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
 cd = ImageDraw.Draw(cover)
 
-# --- Pre-calculate total cover content height for vertical centering ---
-quote_lines      = wrap_quote(data["quote"], width=30).split("\n")
-title_lines      = data["title"].split("\n")
-title_block_h    = len(title_lines) * 90        # each title line + spacing
-gap_after_title  = 50
-divider_h        = 4 + 50                        # divider rect + gap
-label_h          = 60                            # QUOTE OF THE DAY label
-quote_block_h    = len(quote_lines) * 60         # quote lines
-author_h         = 35 + 30                       # author + gap
-total_cover_h    = title_block_h + gap_after_title + divider_h + label_h + quote_block_h + author_h
+quote_lines     = wrap_quote(data["quote"], width=30).split("\n")
+title_lines     = data["title"].split("\n")
+title_block_h   = len(title_lines) * 90
+gap_after_title = 50
+divider_h       = 4 + 50
+label_h         = 60
+quote_block_h   = len(quote_lines) * 60
+author_h        = 65
+total_cover_h   = title_block_h + gap_after_title + divider_h + label_h + quote_block_h + author_h
 
-WATERMARK_ZONE   = 120
-usable           = HEIGHT - WATERMARK_ZONE
-cy               = max(120, (usable - total_cover_h) // 2)
+WATERMARK_ZONE  = 120
+usable          = HEIGHT - WATERMARK_ZONE
+cy              = max(120, (usable - total_cover_h) // 2)
 
 # Top accent line
 cd.rectangle([(80, 60), (WIDTH - 80, 66)], fill=ACCENT_COLOR)
 
-# Brand label (always just below top accent)
+# Brand label
 brand = "THE HUMAN CODE"
 bw = cd.textlength(brand, font=qlabel_font)
 cd.text(((WIDTH - bw) / 2, 82), brand, font=qlabel_font, fill=WATERMARK_COLOR)
 
-# Cover title â€” auto-wrap each part to fit within WIDTH - 80px margin
+# Cover title with dynamic font shrink
 MARGIN = 80
 for line in title_lines:
-    # Shrink font dynamically if line is too wide
     font_size = COVER_TITLE_SIZE
     f = cover_font
     while cd.textlength(line, font=f) > (WIDTH - MARGIN * 2) and font_size > 40:
@@ -269,7 +286,7 @@ cy += gap_after_title
 cd.rectangle([(160, cy), (WIDTH - 160, cy + 4)], fill=ACCENT_COLOR)
 cy += 30
 
-# "QUOTE OF THE DAY" label
+# QUOTE OF THE DAY label
 label = "QUOTE OF THE DAY"
 lw = cd.textlength(label, font=qlabel_font)
 cd.text(((WIDTH - lw) / 2, cy), label, font=qlabel_font, fill=ACCENT_COLOR)
@@ -278,7 +295,7 @@ cy += label_h
 # Opening quote mark
 cd.text((80, cy - 10), "\u201C", font=quote_font, fill=ACCENT_COLOR)
 
-# Quote lines
+# Quote text
 for qline in quote_lines:
     qw = cd.textlength(qline, font=quote_font)
     cd.text(((WIDTH - qw) / 2, cy), qline, font=quote_font, fill=QUOTE_COLOR)
@@ -288,7 +305,7 @@ for qline in quote_lines:
 cd.text((WIDTH - 110, cy - 20), "\u201D", font=quote_font, fill=ACCENT_COLOR)
 cy += 20
 
-# Author â€” use Unicode em dash to avoid encoding bug
+# Author / handle
 author_text = "\u2014 @humancode.psychology"
 aw = cd.textlength(author_text, font=qlabel_font)
 cd.text(((WIDTH - aw) / 2, cy), author_text, font=qlabel_font, fill=TEXT_COLOR)
@@ -303,7 +320,7 @@ cover.save(f"{OUTPUT_FOLDER}/slide_1.png")
 print("SLIDE 1 (cover) saved.")
 
 # =========================================
-# SLIDE 2 â€” LIST POST
+# SLIDE 2 — LIST POST
 # =========================================
 
 img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
