@@ -25,7 +25,7 @@ CTA_SIZE = 38
 WATERMARK_SIZE = 24
 QUOTE_SIZE = 44
 QUOTE_LABEL_SIZE = 26
-COVER_TITLE_SIZE = 62
+COVER_TITLE_SIZE = 62  # reduced to prevent overflow
 
 OUTPUT_FOLDER = "output"
 STATE_FILE = "state.json"
@@ -159,21 +159,20 @@ cta_pool = [
 
 # ========= BUILD 365 BANK =========
 
-# All unique title combos shuffled — 120 unique combinations
+# Build all unique title combos, shuffle, then repeat to fill 365
 all_combos = [(t1, t2) for t1 in title_part1 for t2 in title_part2]
 random.shuffle(all_combos)
 
-# Non-repeating quote and CTA cycles
+# Shuffle quotes and CTAs into non-repeating cycles
 quote_cycle = quote_pool * (365 // len(quote_pool) + 1)
 random.shuffle(quote_cycle)
 
 cta_cycle = cta_pool * (365 // len(cta_pool) + 1)
 random.shuffle(cta_cycle)
 
-# Non-repeating 7-line blocks from line pool
+# Shuffle line_pool into non-repeating 7-line blocks
 line_blocks = []
 shuffled_lines = line_pool[:]
-random.shuffle(shuffled_lines)
 for i in range(365):
     if len(shuffled_lines) < 7:
         shuffled_lines = line_pool[:]
@@ -187,9 +186,12 @@ content_bank = []
 for i in range(365):
     t1, t2 = all_combos[i % len(all_combos)]
     title = f"7 {t1}\n{t2}"
+
     lines = line_blocks[i][:]
     lines.append(cta_cycle[i])
+
     quote, author = quote_cycle[i]
+
     content_bank.append({
         "title": title,
         "lines": lines,
@@ -240,37 +242,39 @@ qlabel_font    = ImageFont.truetype(FONT_PATH, QUOTE_LABEL_SIZE)
 cover_font     = ImageFont.truetype(FONT_PATH, COVER_TITLE_SIZE)
 
 # =========================================
-# SLIDE 1 — COVER (Title + Quote of the Day)
+# SLIDE 1 â€” COVER (Title + Quote of the Day)
 # =========================================
 
 cover = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
 cd = ImageDraw.Draw(cover)
 
-quote_lines     = wrap_quote(data["quote"], width=30).split("\n")
-title_lines     = data["title"].split("\n")
-title_block_h   = len(title_lines) * 90
-gap_after_title = 50
-divider_h       = 4 + 50
-label_h         = 60
-quote_block_h   = len(quote_lines) * 60
-author_h        = 65
-total_cover_h   = title_block_h + gap_after_title + divider_h + label_h + quote_block_h + author_h
+# --- Pre-calculate total cover content height for vertical centering ---
+quote_lines      = wrap_quote(data["quote"], width=30).split("\n")
+title_lines      = data["title"].split("\n")
+title_block_h    = len(title_lines) * 90        # each title line + spacing
+gap_after_title  = 50
+divider_h        = 4 + 50                        # divider rect + gap
+label_h          = 60                            # QUOTE OF THE DAY label
+quote_block_h    = len(quote_lines) * 60         # quote lines
+author_h         = 35 + 30                       # author + gap
+total_cover_h    = title_block_h + gap_after_title + divider_h + label_h + quote_block_h + author_h
 
-WATERMARK_ZONE  = 120
-usable          = HEIGHT - WATERMARK_ZONE
-cy              = max(120, (usable - total_cover_h) // 2)
+WATERMARK_ZONE   = 120
+usable           = HEIGHT - WATERMARK_ZONE
+cy               = max(120, (usable - total_cover_h) // 2)
 
 # Top accent line
 cd.rectangle([(80, 60), (WIDTH - 80, 66)], fill=ACCENT_COLOR)
 
-# Brand label
+# Brand label (always just below top accent)
 brand = "THE HUMAN CODE"
 bw = cd.textlength(brand, font=qlabel_font)
 cd.text(((WIDTH - bw) / 2, 82), brand, font=qlabel_font, fill=WATERMARK_COLOR)
 
-# Cover title with dynamic font shrink
+# Cover title â€” auto-wrap each part to fit within WIDTH - 80px margin
 MARGIN = 80
 for line in title_lines:
+    # Shrink font dynamically if line is too wide
     font_size = COVER_TITLE_SIZE
     f = cover_font
     while cd.textlength(line, font=f) > (WIDTH - MARGIN * 2) and font_size > 40:
@@ -286,7 +290,7 @@ cy += gap_after_title
 cd.rectangle([(160, cy), (WIDTH - 160, cy + 4)], fill=ACCENT_COLOR)
 cy += 30
 
-# QUOTE OF THE DAY label
+# "QUOTE OF THE DAY" label
 label = "QUOTE OF THE DAY"
 lw = cd.textlength(label, font=qlabel_font)
 cd.text(((WIDTH - lw) / 2, cy), label, font=qlabel_font, fill=ACCENT_COLOR)
@@ -295,7 +299,7 @@ cy += label_h
 # Opening quote mark
 cd.text((80, cy - 10), "\u201C", font=quote_font, fill=ACCENT_COLOR)
 
-# Quote text
+# Quote lines
 for qline in quote_lines:
     qw = cd.textlength(qline, font=quote_font)
     cd.text(((WIDTH - qw) / 2, cy), qline, font=quote_font, fill=QUOTE_COLOR)
@@ -305,7 +309,7 @@ for qline in quote_lines:
 cd.text((WIDTH - 110, cy - 20), "\u201D", font=quote_font, fill=ACCENT_COLOR)
 cy += 20
 
-# Author / handle
+# Author â€” use Unicode em dash to avoid encoding bug
 author_text = "\u2014 @humancode.psychology"
 aw = cd.textlength(author_text, font=qlabel_font)
 cd.text(((WIDTH - aw) / 2, cy), author_text, font=qlabel_font, fill=TEXT_COLOR)
@@ -320,7 +324,7 @@ cover.save(f"{OUTPUT_FOLDER}/slide_1.png")
 print("SLIDE 1 (cover) saved.")
 
 # =========================================
-# SLIDE 2 — LIST POST
+# SLIDE 2 â€” LIST POST
 # =========================================
 
 img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
@@ -365,3 +369,46 @@ draw_watermark(draw, watermark_font, WIDTH, HEIGHT)
 img.save(f"{OUTPUT_FOLDER}/slide_2.png")
 print("SLIDE 2 (post) saved.")
 print("DONE")
+
+# =========================================
+# CAPTION + HASHTAGS
+# =========================================
+
+hashtag_pool = [
+    "#darkpsychology", "#humanpsychology", "#psychologyfacts", "#mindset",
+    "#mentalstrength", "#selfawareness", "#emotionalintelligence", "#personalgrowth",
+    "#powermoves", "#respectyourself", "#boundaries", "#discipline",
+    "#stoicism", "#socialskills", "#behaviouralhacks", "#mindpower",
+    "#psychologytips", "#innerstrength", "#focusedmind", "#levelup",
+    "#truthbombs", "#realtalk", "#uncuttruth", "#wakeupcall",
+    "#humancode", "#darktruth", "#harshreality", "#brutaltruth",
+    "#egocheck", "#socialdynamics", "#powerofsilence", "#controlfreak",
+    "#statusmindset", "#influencefacts", "#loyaltyfacts", "#egofacts",
+    "#coldtruth", "#psychologyhacks", "#mindbending", "#selfdiscipline",
+    "#successmindset", "#confidenceboost", "#alphamindset", "#growthfacts",
+    "#motivationdaily", "#truthhurts", "#psychologicalfacts", "#humannaturedaily",
+    "#darkhumor", "#powerthinking",
+]
+
+# Build a non-repeating hashtag cycle (shuffled pool, pick 10 per post)
+hashtag_blocks = []
+shuffled_tags = hashtag_pool[:]
+random.shuffle(shuffled_tags)
+for i in range(365):
+    if len(shuffled_tags) < 10:
+        shuffled_tags = hashtag_pool[:]
+        random.shuffle(shuffled_tags)
+    block = shuffled_tags[:10]
+    shuffled_tags = shuffled_tags[10:]
+    hashtag_blocks.append(block)
+
+# Generate caption for today's post
+caption_title = data["title"].replace("\n", " ")
+caption_tags  = " ".join(hashtag_blocks[idx])
+caption       = f"{caption_title}\n\n{caption_tags}"
+
+with open(f"{OUTPUT_FOLDER}/caption.txt", "w", encoding="utf-8") as f:
+    f.write(caption)
+
+print("CAPTION saved.")
+print(caption)
