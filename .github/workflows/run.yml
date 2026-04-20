@@ -26,10 +26,11 @@ jobs:
         run: |
           python src/generate.py
 
-      - name: Upload slides
+      - name: Upload slides and caption
         uses: actions/upload-artifact@v4
         with:
-          name: daily-slides
+          name: daily-content
           path: |
             output/slide_1.png
             output/slide_2.png
+            output/caption.txt
