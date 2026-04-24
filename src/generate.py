@@ -88,7 +88,6 @@ line_pool = [
     "Authority is felt before it is spoken.",
     "The quietest person often runs the room.",
     "Dependence is the oldest form of control.",
-
     # Human Nature
     "Everyone acts in their own interest first.",
     "People reveal themselves under pressure.",
@@ -100,7 +99,6 @@ line_pool = [
     "Most people need an enemy to feel purpose.",
     "People respect those who need them least.",
     "Belonging matters more to most than truth.",
-
     # Respect & Status
     "Respect withdrawn is a message.",
     "Status is assigned by how you enter a room.",
@@ -112,7 +110,6 @@ line_pool = [
     "Titles impress the weak. Results impress everyone.",
     "Those who beg for loyalty never receive it.",
     "Never chase what should be drawn to you.",
-
     # Mindset & Discipline
     "Clarity is a competitive advantage.",
     "Most people quit the moment it gets real.",
@@ -124,7 +121,6 @@ line_pool = [
     "Soft habits produce hard consequences.",
     "Every compromise on discipline compounds.",
     "Pain avoided today becomes debt tomorrow.",
-
     # Emotion & Ego
     "Ego is loudest when identity feels threatened.",
     "Defensiveness broadcasts the wound.",
@@ -136,7 +132,6 @@ line_pool = [
     "Insecurity dressed up still shows through.",
     "Unhealed wounds become weapons aimed at others.",
     "The ego wants to win. Wisdom wants to grow.",
-
     # Trust & Loyalty
     "Loyalty that has a price was never loyalty.",
     "People show you who they are in small moments.",
@@ -148,7 +143,6 @@ line_pool = [
     "Oversharing creates ammunition.",
     "People remember how useful you were, not who you were.",
     "Watch what people do when they no longer need you.",
-
     # Success & Reality
     "Success is deeply uncomfortable before it is rewarding.",
     "Talent without timing is wasted.",
@@ -160,7 +154,6 @@ line_pool = [
     "Everyone wants the result. Few respect the process.",
     "Luck favors those who removed luck from the equation.",
     "The market does not care about your effort.",
-
     # Social Dynamics
     "People align with winners before victory is confirmed.",
     "Scarcity is the root of most desire.",
@@ -174,7 +167,7 @@ line_pool = [
     "Most rejection is redirection wearing a cruel mask.",
 ]
 
-# ========= QUOTE OF THE DAY POOL =========
+# ========= QUOTE POOL =========
 
 quote_pool = [
     ("The less you react, the more powerful you become.", "Unknown"),
@@ -212,46 +205,23 @@ cta_pool = [
     "Follow for cold truths about human nature.",
 ]
 
-# ========= BUILD 365 BANK =========
+# ========= HASHTAG POOL =========
 
-random.seed(42)
-
-all_combos = [(t1, t2) for t1 in title_part1 for t2 in title_part2]
-random.shuffle(all_combos)
-
-quote_cycle = quote_pool * (365 // len(quote_pool) + 1)
-random.shuffle(quote_cycle)
-
-cta_cycle = cta_pool * (365 // len(cta_pool) + 1)
-random.shuffle(cta_cycle)
-
-line_blocks = []
-shuffled_lines = line_pool[:]
-for i in range(365):
-    if len(shuffled_lines) < 7:
-        shuffled_lines = line_pool[:]
-        random.shuffle(shuffled_lines)
-    block = shuffled_lines[:7]
-    shuffled_lines = shuffled_lines[7:]
-    line_blocks.append(block)
-
-content_bank = []
-
-for i in range(365):
-    t1, t2 = all_combos[i % len(all_combos)]
-    title = f"7 {t1}\n{t2}"
-
-    lines = line_blocks[i][:]
-    lines.append(cta_cycle[i])
-
-    quote, author = quote_cycle[i]
-
-    content_bank.append({
-        "title": title,
-        "lines": lines,
-        "quote": quote,
-        "author": author,
-    })
+hashtag_pool = [
+    "#darkpsychology", "#humanpsychology", "#psychologyfacts", "#mindset",
+    "#mentalstrength", "#selfawareness", "#emotionalintelligence", "#personalgrowth",
+    "#powermoves", "#respectyourself", "#boundaries", "#discipline",
+    "#stoicism", "#socialskills", "#behaviouralhacks", "#mindpower",
+    "#psychologytips", "#innerstrength", "#focusedmind", "#levelup",
+    "#truthbombs", "#realtalk", "#uncuttruth", "#wakeupcall",
+    "#humancode", "#darktruth", "#harshreality", "#brutaltruth",
+    "#egocheck", "#socialdynamics", "#powerofsilence", "#controlfreak",
+    "#statusmindset", "#influencefacts", "#loyaltyfacts", "#egofacts",
+    "#coldtruth", "#psychologyhacks", "#mindbending", "#selfdiscipline",
+    "#successmindset", "#confidenceboost", "#alphamindset", "#growthfacts",
+    "#motivationdaily", "#truthhurts", "#psychologicalfacts", "#humannaturedaily",
+    "#darkhumor", "#powerthinking",
+]
 
 # ========= STATE ENGINE =========
 
@@ -266,10 +236,44 @@ def save_state(s):
         json.dump(s, f)
 
 state = load_state()
-idx = state["index"] % len(content_bank)
-data = content_bank[idx]
+idx = state["index"]
 state["index"] += 1
 save_state(state)
+
+# ========= BUILD CONTENT FOR THIS RUN =========
+# Each idx gets its own isolated RNG â€” different content every run, reproducible per index
+
+rng = random.Random(idx)
+rng2 = random.Random(idx + 9999)
+
+# Title â€” cycle through all combos
+all_combos = [(t1, t2) for t1 in title_part1 for t2 in title_part2]
+combo = all_combos[idx % len(all_combos)]
+title = f"7 {combo[0]}\n{combo[1]}"
+
+# 7 unique lines â€” shuffled differently each idx
+shuffled_lines = line_pool[:]
+rng.shuffle(shuffled_lines)
+lines = shuffled_lines[:7]
+
+# CTA â€” cycles through pool
+cta = cta_pool[idx % len(cta_pool)]
+lines.append(cta)
+
+# Quote â€” cycles through pool
+quote, author = quote_pool[idx % len(quote_pool)]
+
+# Hashtags â€” 10 unique tags, shuffled differently each idx
+shuffled_tags = hashtag_pool[:]
+rng2.shuffle(shuffled_tags)
+tags = shuffled_tags[:10]
+
+data = {
+    "title": title,
+    "lines": lines,
+    "quote": quote,
+    "author": author,
+}
 
 # ========= HELPERS =========
 
@@ -412,35 +416,8 @@ print("DONE")
 # CAPTION + HASHTAGS
 # =========================================
 
-hashtag_pool = [
-    "#darkpsychology", "#humanpsychology", "#psychologyfacts", "#mindset",
-    "#mentalstrength", "#selfawareness", "#emotionalintelligence", "#personalgrowth",
-    "#powermoves", "#respectyourself", "#boundaries", "#discipline",
-    "#stoicism", "#socialskills", "#behaviouralhacks", "#mindpower",
-    "#psychologytips", "#innerstrength", "#focusedmind", "#levelup",
-    "#truthbombs", "#realtalk", "#uncuttruth", "#wakeupcall",
-    "#humancode", "#darktruth", "#harshreality", "#brutaltruth",
-    "#egocheck", "#socialdynamics", "#powerofsilence", "#controlfreak",
-    "#statusmindset", "#influencefacts", "#loyaltyfacts", "#egofacts",
-    "#coldtruth", "#psychologyhacks", "#mindbending", "#selfdiscipline",
-    "#successmindset", "#confidenceboost", "#alphamindset", "#growthfacts",
-    "#motivationdaily", "#truthhurts", "#psychologicalfacts", "#humannaturedaily",
-    "#darkhumor", "#powerthinking",
-]
-
-hashtag_blocks = []
-shuffled_tags = hashtag_pool[:]
-random.shuffle(shuffled_tags)
-for i in range(365):
-    if len(shuffled_tags) < 10:
-        shuffled_tags = hashtag_pool[:]
-        random.shuffle(shuffled_tags)
-    block = shuffled_tags[:10]
-    shuffled_tags = shuffled_tags[10:]
-    hashtag_blocks.append(block)
-
 caption_title = data["title"].replace("\n", " ")
-caption_tags  = " ".join(hashtag_blocks[idx])
+caption_tags  = " ".join(tags)
 caption       = f"{caption_title}\n\n{caption_tags}"
 
 with open(f"{OUTPUT_FOLDER}/caption.txt", "w", encoding="utf-8") as f:
