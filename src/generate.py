@@ -25,7 +25,7 @@ CTA_SIZE = 38
 WATERMARK_SIZE = 24
 QUOTE_SIZE = 44
 QUOTE_LABEL_SIZE = 26
-COVER_TITLE_SIZE = 62  # reduced to prevent overflow
+COVER_TITLE_SIZE = 62
 
 OUTPUT_FOLDER = "output"
 STATE_FILE = "state.json"
@@ -77,46 +77,101 @@ title_part2 = [
 # ========= LINE POOL =========
 
 line_pool = [
-    "People respect what they fear losing.",
-    "Silence exposes truth.",
-    "Comfort weakens discipline.",
-    "Attention equals value.",
-    "Status changes treatment.",
-    "Consistency builds authority.",
-    "Boundaries earn respect.",
-    "Presence speaks loudly.",
-    "Control attracts respect.",
-    "People test limits quietly.",
-    "Energy reveals confidence.",
-    "Calm signals power.",
-    "Results silence doubt.",
-    "Most loyalty is conditional.",
-    "People value scarcity.",
-    "Focus creates advantage.",
-    "Detachment reveals worth.",
-    "Discipline shapes identity.",
-    "Restraint shows strength.",
-    "Patience builds leverage.",
-    "Desperation repels opportunity.",
-    "Ambition without action is fantasy.",
-    "Weakness invites disrespect.",
-    "Most advice protects the giver.",
-    "Envy hides behind criticism.",
-    "Neediness destroys attraction.",
-    "Power is taken, not given.",
-    "Kindness without limits gets exploited.",
-    "People follow confidence, not logic.",
-    "Your network defines your ceiling.",
-    "Emotions cloud judgment at the worst times.",
-    "Obsession beats talent consistently.",
-    "Those who talk most know least.",
-    "Money reveals true character.",
-    "Reputation travels faster than truth.",
-    "Urgency is often manufactured.",
-    "Pain teaches what comfort never could.",
-    "Most people fear standing alone.",
-    "Accountability is rare and powerful.",
-    "Perception shapes reality more than facts.",
+    # Power & Control
+    "Power is maintained through mystery.",
+    "People obey confidence, not credentials.",
+    "Those who need approval lose control.",
+    "Influence is built in private.",
+    "The one who cares less holds more power.",
+    "Control your reactions, control the room.",
+    "People exploit predictability.",
+    "Authority is felt before it is spoken.",
+    "The quietest person often runs the room.",
+    "Dependence is the oldest form of control.",
+
+    # Human Nature
+    "Everyone acts in their own interest first.",
+    "People reveal themselves under pressure.",
+    "Flattery is a weapon in disguise.",
+    "Most generosity comes with a hidden price.",
+    "People fear being ordinary more than failure.",
+    "Humans justify what they already want.",
+    "Nobody remembers your intentions, only outcomes.",
+    "Most people need an enemy to feel purpose.",
+    "People respect those who need them least.",
+    "Belonging matters more to most than truth.",
+
+    # Respect & Status
+    "Respect withdrawn is a message.",
+    "Status is assigned by how you enter a room.",
+    "People treat you how you train them to.",
+    "Lowering your standards signals desperation.",
+    "Tolerance for disrespect invites more of it.",
+    "How you react teaches others your limits.",
+    "Dignity is non-negotiable or it is nothing.",
+    "Titles impress the weak. Results impress everyone.",
+    "Those who beg for loyalty never receive it.",
+    "Never chase what should be drawn to you.",
+
+    # Mindset & Discipline
+    "Clarity is a competitive advantage.",
+    "Most people quit the moment it gets real.",
+    "Routine is the foundation all greatness hides behind.",
+    "Boredom is where discipline is actually built.",
+    "The mind you ignore will eventually run you.",
+    "Focus is a form of violence toward distraction.",
+    "Self-deception costs more than any enemy could.",
+    "Soft habits produce hard consequences.",
+    "Every compromise on discipline compounds.",
+    "Pain avoided today becomes debt tomorrow.",
+
+    # Emotion & Ego
+    "Ego is loudest when identity feels threatened.",
+    "Defensiveness broadcasts the wound.",
+    "Anger signals where you are still controlled.",
+    "Pride is the most expensive luxury most people keep.",
+    "People project what they cannot admit.",
+    "Blame is the language of the powerless.",
+    "Emotional neediness destroys what it clings to.",
+    "Insecurity dressed up still shows through.",
+    "Unhealed wounds become weapons aimed at others.",
+    "The ego wants to win. Wisdom wants to grow.",
+
+    # Trust & Loyalty
+    "Loyalty that has a price was never loyalty.",
+    "People show you who they are in small moments.",
+    "Trust is verified through inconvenience.",
+    "Silence during your struggle reveals your circle.",
+    "Those who gossip to you gossip about you.",
+    "Fair weather allies disappear before the storm ends.",
+    "Betrayal rarely comes from strangers.",
+    "Oversharing creates ammunition.",
+    "People remember how useful you were, not who you were.",
+    "Watch what people do when they no longer need you.",
+
+    # Success & Reality
+    "Success is deeply uncomfortable before it is rewarding.",
+    "Talent without timing is wasted.",
+    "Most overnight success is a decade in hiding.",
+    "Opportunity looks like work to the unprepared.",
+    "The gap between who you are and who you want to be is daily habits.",
+    "Winners are just losers who kept iterating.",
+    "Comfort zones shrink without you noticing.",
+    "Everyone wants the result. Few respect the process.",
+    "Luck favors those who removed luck from the equation.",
+    "The market does not care about your effort.",
+
+    # Social Dynamics
+    "People align with winners before victory is confirmed.",
+    "Scarcity is the root of most desire.",
+    "Perception is managed or it manages you.",
+    "Most conversations are negotiations in disguise.",
+    "The one who speaks first in silence often loses.",
+    "Charisma is attention made to feel like warmth.",
+    "Social hierarchies form whether you acknowledge them or not.",
+    "People read confidence faster than they read words.",
+    "Your reputation enters rooms you have never been in.",
+    "Most rejection is redirection wearing a cruel mask.",
 ]
 
 # ========= QUOTE OF THE DAY POOL =========
@@ -159,21 +214,17 @@ cta_pool = [
 
 # ========= BUILD 365 BANK =========
 
-# Fixed seed ensures the same order every run â€” only index advances
 random.seed(42)
 
-# Build all unique title combos, shuffle, then repeat to fill 365
 all_combos = [(t1, t2) for t1 in title_part1 for t2 in title_part2]
 random.shuffle(all_combos)
 
-# Shuffle quotes and CTAs into non-repeating cycles
 quote_cycle = quote_pool * (365 // len(quote_pool) + 1)
 random.shuffle(quote_cycle)
 
 cta_cycle = cta_pool * (365 // len(cta_pool) + 1)
 random.shuffle(cta_cycle)
 
-# Shuffle line_pool into non-repeating 7-line blocks
 line_blocks = []
 shuffled_lines = line_pool[:]
 for i in range(365):
@@ -251,33 +302,28 @@ cover_font     = ImageFont.truetype(FONT_PATH, COVER_TITLE_SIZE)
 cover = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
 cd = ImageDraw.Draw(cover)
 
-# --- Pre-calculate total cover content height for vertical centering ---
 quote_lines      = wrap_quote(data["quote"], width=30).split("\n")
 title_lines      = data["title"].split("\n")
-title_block_h    = len(title_lines) * 90        # each title line + spacing
+title_block_h    = len(title_lines) * 90
 gap_after_title  = 50
-divider_h        = 4 + 50                        # divider rect + gap
-label_h          = 60                            # QUOTE OF THE DAY label
-quote_block_h    = len(quote_lines) * 60         # quote lines
-author_h         = 35 + 30                       # author + gap
+divider_h        = 4 + 50
+label_h          = 60
+quote_block_h    = len(quote_lines) * 60
+author_h         = 35 + 30
 total_cover_h    = title_block_h + gap_after_title + divider_h + label_h + quote_block_h + author_h
 
 WATERMARK_ZONE   = 120
 usable           = HEIGHT - WATERMARK_ZONE
 cy               = max(120, (usable - total_cover_h) // 2)
 
-# Top accent line
 cd.rectangle([(80, 60), (WIDTH - 80, 66)], fill=ACCENT_COLOR)
 
-# Brand label (always just below top accent)
 brand = "THE HUMAN CODE"
 bw = cd.textlength(brand, font=qlabel_font)
 cd.text(((WIDTH - bw) / 2, 82), brand, font=qlabel_font, fill=WATERMARK_COLOR)
 
-# Cover title â€” auto-wrap each part to fit within WIDTH - 80px margin
 MARGIN = 80
 for line in title_lines:
-    # Shrink font dynamically if line is too wide
     font_size = COVER_TITLE_SIZE
     f = cover_font
     while cd.textlength(line, font=f) > (WIDTH - MARGIN * 2) and font_size > 40:
@@ -289,38 +335,30 @@ for line in title_lines:
 
 cy += gap_after_title
 
-# Divider
 cd.rectangle([(160, cy), (WIDTH - 160, cy + 4)], fill=ACCENT_COLOR)
 cy += 30
 
-# "QUOTE OF THE DAY" label
 label = "QUOTE OF THE DAY"
 lw = cd.textlength(label, font=qlabel_font)
 cd.text(((WIDTH - lw) / 2, cy), label, font=qlabel_font, fill=ACCENT_COLOR)
 cy += label_h
 
-# Opening quote mark
 cd.text((80, cy - 10), "\u201C", font=quote_font, fill=ACCENT_COLOR)
 
-# Quote lines
 for qline in quote_lines:
     qw = cd.textlength(qline, font=quote_font)
     cd.text(((WIDTH - qw) / 2, cy), qline, font=quote_font, fill=QUOTE_COLOR)
     cy += 60
 
-# Closing quote mark
 cd.text((WIDTH - 110, cy - 20), "\u201D", font=quote_font, fill=ACCENT_COLOR)
 cy += 20
 
-# Author â€” use Unicode em dash to avoid encoding bug
 author_text = "\u2014 @humancode.psychology"
 aw = cd.textlength(author_text, font=qlabel_font)
 cd.text(((WIDTH - aw) / 2, cy), author_text, font=qlabel_font, fill=TEXT_COLOR)
 
-# Bottom accent line
 cd.rectangle([(80, HEIGHT - 100), (WIDTH - 80, HEIGHT - 94)], fill=ACCENT_COLOR)
 
-# Watermark
 draw_watermark(cd, watermark_font, WIDTH, HEIGHT)
 
 cover.save(f"{OUTPUT_FOLDER}/slide_1.png")
@@ -337,7 +375,6 @@ content_height = measure_content_height(data)
 usable_height = HEIGHT - 80
 y = max(60, (usable_height - content_height) // 2)
 
-# Title
 for line in data["title"].split("\n"):
     w = draw.textlength(line, font=title_font)
     draw.text(((WIDTH - w) / 2, y), line, font=title_font, fill=TITLE_COLOR)
@@ -345,7 +382,6 @@ for line in data["title"].split("\n"):
 
 y += 40
 
-# Lines
 num = 1
 for line in data["lines"]:
     is_cta = (num == 8)
@@ -366,7 +402,6 @@ for line in data["lines"]:
     y += 25
     num += 1
 
-# Watermark
 draw_watermark(draw, watermark_font, WIDTH, HEIGHT)
 
 img.save(f"{OUTPUT_FOLDER}/slide_2.png")
@@ -393,7 +428,6 @@ hashtag_pool = [
     "#darkhumor", "#powerthinking",
 ]
 
-# Build a non-repeating hashtag cycle (shuffled pool, pick 10 per post)
 hashtag_blocks = []
 shuffled_tags = hashtag_pool[:]
 random.shuffle(shuffled_tags)
@@ -405,7 +439,6 @@ for i in range(365):
     shuffled_tags = shuffled_tags[10:]
     hashtag_blocks.append(block)
 
-# Generate caption for today's post
 caption_title = data["title"].replace("\n", " ")
 caption_tags  = " ".join(hashtag_blocks[idx])
 caption       = f"{caption_title}\n\n{caption_tags}"
