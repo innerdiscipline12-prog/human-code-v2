@@ -482,7 +482,7 @@ def render(arc, quote, author, tags):
             y += 50
         y += 25
 
-    cta = CTA_POOL[(arc["topic"].__hash__() % len(CTA_POOL))]
+    cta = CTA_POOL[(sum(ord(c) for c in arc["topic"] + arc["angle"]) % len(CTA_POOL))]
     cw = draw.textlength(cta, font=cta_font)
     draw.text(((WIDTH - cw) / 2, y), cta, font=cta_font, fill=CTA_COLOR)
     draw_watermark(draw, watermark_font)
