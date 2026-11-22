@@ -305,7 +305,9 @@ def impact_score(arc):
     first = normalize(lines[0])
     middle = normalize(" ".join(lines[1:6]))
     final = normalize(lines[-1])
-    score = 0.0
+    # Base structural credit: every curated arc already has seven distinct,
+    # deliberately ordered points. Content keywords then refine the score.
+    score = 1.0
 
     curiosity = ["before", "why", "what", "people notice", "the difference", "the person", "not everyone", "the fastest", "the harder"]
     tension = ["control", "exposed", "consequence", "cost", "pressure", "desperate", "insecurity", "risk", "trust", "need", "fear", "disrespect"]
