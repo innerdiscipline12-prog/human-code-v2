@@ -22,6 +22,10 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Validate Human Code V3 — 20 consecutive generations
+        run: |
+          python src/generate.py --stress-test 20
+
       - name: Run generator
         run: |
           python src/generate.py
@@ -42,3 +46,5 @@ jobs:
             output/slide_1.png
             output/slide_2.png
             output/caption.txt
+            output/manifest.json
+            output/stress_test/report.json
