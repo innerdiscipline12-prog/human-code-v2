@@ -262,14 +262,14 @@ TITLE_FALLBACKS = [
 ]
 
 QUOTE_POOL = [
-    ("When you react, you give away your power.", "Unknown"),
-    ("The less you react, the more powerful you become.", "Unknown"),
-    ("Not everyone deserves access to you.", "Unknown"),
-    ("Silence is often the clearest answer.", "Unknown"),
-    ("The strongest position is having a choice.", "Unknown"),
-    ("What you tolerate teaches people how to treat you.", "Unknown"),
-    ("People reveal themselves through patterns, not promises.", "Unknown"),
-    ("Self-awareness begins where excuses end.", "Unknown"),
+    ("When you react, you give away your power.", "HUMAN CODE"),
+    ("The less you react, the more powerful you become.", "HUMAN CODE"),
+    ("Not everyone deserves access to you.", "HUMAN CODE"),
+    ("Silence is often the clearest answer.", "HUMAN CODE"),
+    ("The strongest position is having a choice.", "HUMAN CODE"),
+    ("What you tolerate teaches people how to treat you.", "HUMAN CODE"),
+    ("People reveal themselves through patterns, not promises.", "HUMAN CODE"),
+    ("Self-awareness begins where excuses end.", "HUMAN CODE"),
 ]
 
 CTA_POOL = [
