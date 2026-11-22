@@ -489,7 +489,7 @@ def render(arc, quote, author, tags):
     BODY_SIZE = 34
     BODY_LINE = 46
     POINT_GAP = 20
-    CTA_SIZE = 34
+    CTA_LOCAL_SIZE = 34
 
     def make_body_font(size):
         return ImageFont.truetype(FONT_PATH, size)
@@ -501,7 +501,7 @@ def render(arc, quote, author, tags):
         height = 0
         for wrapped in wrapped_points:
             height += len(wrapped.split("\n")) * BODY_LINE + POINT_GAP
-        cta_font_local = ImageFont.truetype(FONT_PATH, CTA_SIZE if size >= 32 else max(30, size))
+        cta_font_local = ImageFont.truetype(FONT_PATH, CTA_LOCAL_SIZE if size >= 32 else max(30, size))
         return font, cta_font_local, wrapped_points, height
 
     # Try the preferred size first, then step down until every point fits.
