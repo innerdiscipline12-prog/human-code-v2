@@ -393,14 +393,30 @@ def save_state(state):
     with open(STATE_FILE, "w", encoding="utf-8") as f:
         json.dump(state, f, indent=2)
 
-def smart_wrap(line):
-    if len(line) <= 55:
-        return line
-    if len(line) <= 95:
+def smart_wrap(line, font=None, max_width=900, draw=None):
+    """Wrap by rendered pixel width, not character count.
+    
+    Character-count wrapping caused long lines to overflow the 1080px canvas.
+    Human Code V3 keeps all body copy inside a fixed 90px side safe margin.
+    """
+    words = line.split()
+    if not words:
+        return ""
+    if font is None or draw is None:
         import textwrap
-        return textwrap.fill(line, width=42)
-    import textwrap
-    return textwrap.fill(line, width=36)
+        return textwrap.fill(line, width=36)
+
+    lines = []
+    current = words[0]
+    for word in words[1:]:
+        candidate = current + " " + word
+        if draw.textlength(candidate, font=font) <= max_width:
+            current = candidate
+        else:
+            lines.append(current)
+            current = word
+    lines.append(current)
+    return "\n".join(lines)
 
 def wrap_quote(line, width=30):
     import textwrap
@@ -462,31 +478,71 @@ def render(arc, quote, author, tags):
     cover.save(f"{OUTPUT_FOLDER}/slide_1.png")
 
     # Slide 2: seven escalating points + CTA.
+    # Safe area: 90px left/right, 120px top/bottom.
+    # Body copy is wrapped by actual rendered width and the font is reduced
+    # only if the complete composition cannot fit vertically.
     img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
     draw = ImageDraw.Draw(img)
-    title_h = len(title_lines) * 70 + 40
-    line_heights = sum(max(1, len(smart_wrap(x).split("\n"))) * 50 + 25 for x in arc["lines"])
-    total_h = title_h + line_heights + 80
-    y = max(60, (HEIGHT - total_h) // 2)
 
+    SAFE_LEFT, SAFE_RIGHT = 90, WIDTH - 90
+    SAFE_TOP, SAFE_BOTTOM = 105, HEIGHT - 125
+    BODY_SIZE = 34
+    BODY_LINE = 46
+    POINT_GAP = 20
+    CTA_SIZE = 34
+
+    def make_body_font(size):
+        return ImageFont.truetype(FONT_PATH, size)
+
+    def layout_body(size):
+        font = make_body_font(size)
+        wrapped_points = [smart_wrap(line, font=font, max_width=SAFE_RIGHT-SAFE_LEFT-10, draw=draw)
+                          for line in arc["lines"]]
+        height = 0
+        for wrapped in wrapped_points:
+            height += len(wrapped.split("\n")) * BODY_LINE + POINT_GAP
+        cta_font_local = ImageFont.truetype(FONT_PATH, CTA_SIZE if size >= 32 else max(30, size))
+        return font, cta_font_local, wrapped_points, height
+
+    # Try the preferred size first, then step down until every point fits.
+    chosen = None
+    for size in range(BODY_SIZE, 27, -1):
+        font, cta_font_local, wrapped_points, body_height = layout_body(size)
+        title_height = len(title_lines) * 70 + 30
+        available = SAFE_BOTTOM - SAFE_TOP - title_height - 45
+        cta_height = 55
+        if body_height + cta_height <= available:
+            chosen = (font, cta_font_local, wrapped_points, title_height)
+            break
+
+    if chosen is None:
+        font, cta_font_local, wrapped_points, title_height = layout_body(27)
+    else:
+        font, cta_font_local, wrapped_points, title_height = chosen
+
+    y = SAFE_TOP
     for line in title_lines:
         w = draw.textlength(line, font=title_font)
+        # Keep title inside the same horizontal safe area.
         draw.text(((WIDTH - w) / 2, y), line, font=title_font, fill=TITLE_COLOR)
         y += 70
-    y += 40
+    y += 30
 
-    for n, line in enumerate(arc["lines"], 1):
-        wrapped = smart_wrap(line)
-        for j, wl in enumerate(wrapped.split("\n")):
-            text = f"{n}. {wl}" if j == 0 else f"    {wl}"
-            w = draw.textlength(text, font=text_font)
-            draw.text(((WIDTH - w) / 2, y), text, font=text_font, fill=TEXT_COLOR)
-            y += 50
-        y += 25
+    for n, wrapped in enumerate(wrapped_points, 1):
+        lines = wrapped.split("\n")
+        for j, wl in enumerate(lines):
+            prefix = f"{n}. " if j == 0 else "    "
+            text_line = prefix + wl
+            w = draw.textlength(text_line, font=font)
+            x = max(SAFE_LEFT, min((WIDTH - w) / 2, SAFE_RIGHT - w))
+            draw.text((x, y), text_line, font=font, fill=TEXT_COLOR)
+            y += BODY_LINE
+        y += POINT_GAP
 
     cta = CTA_POOL[(sum(ord(c) for c in arc["topic"] + arc["angle"]) % len(CTA_POOL))]
-    cw = draw.textlength(cta, font=cta_font)
-    draw.text(((WIDTH - cw) / 2, y), cta, font=cta_font, fill=CTA_COLOR)
+    cw = draw.textlength(cta, font=cta_font_local)
+    cta_x = max(SAFE_LEFT, min((WIDTH - cw) / 2, SAFE_RIGHT - cw))
+    draw.text((cta_x, y), cta, font=cta_font_local, fill=CTA_COLOR)
     draw_watermark(draw, watermark_font)
     img.save(f"{OUTPUT_FOLDER}/slide_2.png")
 
