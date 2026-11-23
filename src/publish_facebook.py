@@ -97,14 +97,34 @@ def publish_multi_photo(page_id: str, token: str, caption: str, photo_ids: list[
     return str(post_id)
 
 
-def validate_token(page_id: str, token: str):
+def resolve_page_token(page_id: str, page_token: str | None, system_user_token: str | None):
+    if page_token:
+        token = page_token
+    else:
+        query = urllib.parse.urlencode({
+            "fields": "id,name,access_token,tasks",
+            "access_token": system_user_token,
+        })
+        accounts = request_json(f"{GRAPH_BASE}/me/accounts?{query}")
+        matches = [item for item in accounts.get("data", []) if str(item.get("id")) == str(page_id)]
+        if not matches or not matches[0].get("access_token"):
+            raise RuntimeError(
+                f"System user token cannot access Page {page_id}. Response: {json.dumps(accounts)}"
+            )
+        token = matches[0]["access_token"]
+        tasks = matches[0].get("tasks", [])
+        if "CREATE_CONTENT" not in tasks:
+            raise RuntimeError(
+                f"Page token is missing CREATE_CONTENT task for Page {page_id}. Tasks: {tasks}"
+            )
+
     query = urllib.parse.urlencode({"fields": "id,name", "access_token": token})
     result = request_json(f"{GRAPH_BASE}/{page_id}?{query}")
     if str(result.get("id")) != str(page_id):
         raise RuntimeError(
             f"Token did not resolve to expected Page: {json.dumps(result)}"
         )
-    return result
+    return token, result
 
 
 def main():
@@ -115,11 +135,12 @@ def main():
 
     page_id = os.getenv("FACEBOOK_PAGE_ID")
     token = os.getenv("FACEBOOK_PAGE_ACCESS_TOKEN")
+    system_user_token = os.getenv("META_SYSTEM_USER_ACCESS_TOKEN")
 
     if not page_id:
         raise SystemExit("FACEBOOK_PAGE_ID is required")
-    if not token and not args.dry_run:
-        raise SystemExit("FACEBOOK_PAGE_ACCESS_TOKEN is required")
+    if not token and not system_user_token and not args.dry_run:
+        raise SystemExit("META_SYSTEM_USER_ACCESS_TOKEN is required")
 
     output = Path(args.output)
     slide_1 = output / "slide_1.png"
@@ -148,7 +169,7 @@ def main():
         }, indent=2))
         return
 
-    page = validate_token(page_id, token)
+    token, page = resolve_page_token(page_id, token, system_user_token)
     print(f"Facebook token validated for Page: {page.get('name')} ({page.get('id')})")
 
     photo_ids = []
