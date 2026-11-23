@@ -1,0 +1,90 @@
+name: Publish Human Code to Facebook
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Generate Content workflow run ID containing the daily-content artifact"
+        required: true
+        default: "45044422253"
+      publish:
+        description: "Publish live to the Facebook Page"
+        required: true
+        type: boolean
+        default: false
+  workflow_run:
+    workflows: ["Generate Content"]
+    types: [completed]
+
+concurrency:
+  group: human-code-facebook-publisher
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  publish:
+    if: >-
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       vars.FACEBOOK_PUBLISH_ENABLED == 'true')
+    runs-on: ubuntu-latest
+    env:
+      FACEBOOK_PAGE_ID: "958721850647570"
+      FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+      META_GRAPH_VERSION: "v27.0"
+
+    steps:
+      - name: Checkout publisher
+        uses: actions/checkout@v4
+
+      - name: Resolve source run
+        id: source
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            echo "run_id=${{ github.event.workflow_run.id }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "run_id=${{ inputs.source_run_id }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download generated content
+        uses: actions/download-artifact@v4
+        with:
+          name: daily-content
+          path: output
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: ${{ steps.source.outputs.run_id }}
+
+      - name: Validate generated artifact
+        shell: bash
+        run: |
+          test -s output/slide_1.png
+          test -s output/slide_2.png
+          test -s output/caption.txt
+          python - <<'PY'
+          import struct
+          from pathlib import Path
+          for name in ("slide_1.png", "slide_2.png"):
+              data = Path("output", name).read_bytes()
+              assert data[:8] == b"\x89PNG\r\n\x1a\n", name
+              width, height = struct.unpack(">II", data[16:24])
+              assert (width, height) == (1080, 1350), (name, width, height)
+          print("Artifact validation passed: two 1080x1350 PNG slides.")
+          PY
+
+      - name: Publish to Facebook
+        if: github.event_name == 'workflow_dispatch' && inputs.publish == true
+        run: python src/publish_facebook.py --output output
+
+      - name: Dry-run Facebook publisher
+        if: github.event_name == 'workflow_dispatch' && inputs.publish != true
+        run: python src/publish_facebook.py --output output --dry-run
+
+      - name: Automated Facebook publish
+        if: github.event_name == 'workflow_run'
+        run: python src/publish_facebook.py --output output
